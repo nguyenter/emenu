@@ -1,0 +1,127 @@
+{% extends "layout_cashier.html" %}
+
+{% block content %}
+
+<h2>Thu ngân</h2>
+
+<div class="row">
+
+    <div class="col-md-3">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                Bàn
+
+            </div>
+
+            <div class="card-body">
+
+                {% for ban in ds_ban %}
+
+                <a href="/cashier/chon-ban/{{ ban.id }}"
+                   class="btn w-100 mb-2
+                   {% if ban.trang_thai == 'TRONG' %}
+                       btn-success
+                   {% else %}
+                       btn-danger
+                   {% endif %}">
+
+                    {{ ban.ten_ban }}
+
+                    <br>
+
+                    {{ ban.trang_thai }}
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-6">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                Thực đơn
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    {% for mon in ds_hang_hoa %}
+
+                    <div class="col-md-4 mb-3">
+
+                        <div class="card">
+
+                            <div class="card-body text-center">
+
+                                <strong>
+
+                                    {{ mon.ten_hang }}
+
+                                </strong>
+
+                                <br>
+
+                                {{ "{:,.0f}".format(mon.gia_ban) }} đ
+
+                                <br><br>
+
+                                <button class="btn btn-primary">
+
+                                    Chọn
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-3">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                Hóa đơn
+
+            </div>
+
+            <div class="card-body">
+
+                Chưa chọn bàn
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Quản lý phòng/bàn</h2>
+
+<div class="mb-3">
+
+    <a href="/khu-vuc/them"
+       class="btn btn-primary">
+
+        Thêm khu vực
+    </a>
+
+    <a href="/ban/them"
+       class="btn btn-success">
+
+        Thêm bàn
+    </a>
+
+</div>
+
+
+{% for kv in ds_khu_vuc %}
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <strong>{{ kv.ten_khu_vuc }}</strong>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            {% for ban in kv.danh_sach_ban %}
+
+            <div class="col-md-2 mb-3">
+
+                <div class="card text-center">
+
+                    <div class="card-body">
+
+                        <h5>{{ ban.ten_ban }}</h5>
+
+                        <p>{{ ban.so_ghe }} ghế</p>
+
+                        {% if ban.trang_thai == 'TRONG' %}
+
+                        <span class="badge bg-success">
+
+                            Trống
+
+                        </span>
+
+                        {% elif ban.trang_thai == 'DANG_PHUC_VU' %}
+
+                        <span class="badge bg-danger">
+
+                            Đang phục vụ
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-warning">
+
+                            Đặt trước
+
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

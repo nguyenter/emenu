@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập eMenu</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-header text-center">
+                    <h3>eMenu</h3>
+                    <p>Đăng nhập hệ thống</p>
+                </div>
+
+                <div class="card-body">
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <form method="POST">
+
+                        <div class="mb-3">
+                            <label>Tên đăng nhập</label>
+
+                            <input type="text"
+                                   name="ten_dang_nhap"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Mật khẩu</label>
+
+                            <input type="password"
+                                   name="mat_khau"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                        <button class="btn btn-primary w-100">
+                            Đăng nhập
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

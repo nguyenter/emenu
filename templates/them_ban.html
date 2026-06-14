@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Thêm bàn
+{% endblock %}
+
+{% block content %}
+
+<h2>Thêm bàn mới</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+        <label class="form-label">Tên bàn</label>
+
+        <input type="text"
+               name="ten_ban"
+               class="form-control"
+               placeholder="Ví dụ: B1, VIP1"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Khu vực</label>
+
+        <select name="khu_vuc_id"
+                class="form-select"
+                required>
+
+            <option value="">
+                -- Chọn khu vực --
+            </option>
+
+            {% for kv in ds_khu_vuc %}
+
+            <option value="{{ kv.id }}">
+                {{ kv.ten_khu_vuc }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Số thứ tự</label>
+
+        <input type="number"
+               name="so_thu_tu"
+               class="form-control"
+               value="0">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Số ghế</label>
+
+        <input type="number"
+               name="so_ghe"
+               class="form-control"
+               value="4"
+               min="1">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Loại bàn</label>
+
+        <select name="loai"
+                class="form-select">
+
+            <option value="THUONG">
+                Thường
+            </option>
+
+            <option value="VIP">
+                VIP
+            </option>
+
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ghi chú</label>
+
+        <textarea name="ghi_chu"
+                  class="form-control"
+                  rows="3"></textarea>
+    </div>
+
+    <button type="submit"
+            class="btn btn-success">
+
+        Lưu
+    </button>
+
+    <a href="/phong-ban"
+       class="btn btn-secondary">
+
+        Quay lại
+    </a>
+
+</form>
+
+{% endblock %}

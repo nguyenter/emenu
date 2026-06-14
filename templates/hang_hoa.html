@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Quản lý hàng hóa</h2>
+
+<a href="/hang-hoa/them"
+   class="btn btn-success mb-3">
+
+    Thêm hàng hóa
+</a>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Mã</th>
+        <th>Tên hàng</th>
+        <th>Giá bán</th>
+    </tr>
+
+    {% for hh in ds_hang_hoa %}
+
+    <tr>
+
+        <td>{{ hh.ma_hang }}</td>
+
+        <td>{{ hh.ten_hang }}</td>
+
+        <td>{{ hh.gia_ban }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends "layout_cashier.html" %}
+
+{% block content %}
+
+<h2>Hóa đơn {{ hoa_don.ma_hoa_don }}</h2>
+<br>
+
+<a href="/cashier/them-khach-hang/{{ hoa_don.id }}"
+   class="btn btn-info">
+
+    Thêm khách hàng
+
+</a>
+
+{% if hoa_don.khach_hang_id %}
+
+    <span class="ms-3">
+
+        Khách hàng:
+        <strong>
+            {{ hoa_don.khach_hang.ten_khach_hang }}
+        </strong>
+
+    </span>
+
+{% endif %}
+
+<hr>
+
+<div class="row">
+
+    <div class="col-md-7">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                Thực đơn
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    {% for mon in ds_mon %}
+
+                    <div class="col-md-4 mb-3">
+
+                        <div class="card">
+
+                            <div class="card-body text-center">
+
+                                <strong>
+
+                                    {{ mon.ten_hang }}
+
+                                </strong>
+
+                                <br>
+
+                                {{ "{:,.0f}".format(mon.gia_ban) }} đ
+
+                                <br><br>
+
+                                <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
+                                   class="btn btn-primary">
+
+                                    Chọn
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-5">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                Chi tiết hóa đơn
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table">
+
+                    <tr>
+
+                        <th>Món</th>
+
+                        <th>SL</th>
+
+                        <th>Tiền</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                    {% for ct in ds_chi_tiet %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ ct.hang_hoa.ten_hang }}
+
+                        </td>
+
+                        <td>
+
+                            {{ ct.so_luong }}
+
+                        </td>
+
+                        <td>
+
+                            {{ "{:,.0f}".format(ct.thanh_tien) }} đ
+
+                        </td>
+
+                        <td>
+
+                            <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ ct.hang_hoa.id }}"
+                               class="btn btn-success btn-sm">
+
+                                +
+
+                            </a>
+
+                            <a href="/cashier/giam-mon/{{ ct.id }}"
+                               class="btn btn-warning btn-sm">
+
+                                -
+
+                            </a>
+
+                            <a href="/cashier/xoa-mon/{{ ct.id }}"
+                               class="btn btn-danger btn-sm">
+
+                                X
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+                <hr>
+
+                <h4>
+
+                    Tổng tiền:
+
+                    {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
+
+                </h4>
+
+                <br>
+
+                <a href="/cashier/thanh-toan/{{ hoa_don.id }}"
+                   class="btn btn-success">
+
+                    Thanh toán
+
+                </a>
+
+                <a href="/cashier"
+                   class="btn btn-secondary">
+
+                    Quay lại
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

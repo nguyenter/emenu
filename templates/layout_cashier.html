@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        {% block title %}
+            Thu ngân
+        {% endblock %}
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container-fluid">
+
+        <span class="navbar-brand">
+
+            eMenu - Thu ngân
+
+        </span>
+
+        <div class="text-white">
+
+            Xin chào
+
+            <strong>
+
+                {{ session['ho_ten'] }}
+
+            </strong>
+
+            <a href="/logout"
+               class="btn btn-danger btn-sm ms-3">
+
+                Đăng xuất
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<div class="container-fluid mt-3">
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+
+</html>

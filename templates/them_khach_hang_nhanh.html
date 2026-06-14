@@ -1,0 +1,46 @@
+{% extends "layout_cashier.html" %}
+
+{% block content %}
+
+<h2>Thêm khách hàng</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+
+        <label>Tên khách hàng</label>
+
+        <input type="text"
+               name="ten_khach_hang"
+               class="form-control"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Số điện thoại</label>
+
+        <input type="text"
+               name="dien_thoai"
+               class="form-control">
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+
+        Lưu
+
+    </button>
+
+    <a href="/cashier/chon-ban/{{ hoa_don.ban_id }}"
+       class="btn btn-secondary">
+
+        Hủy
+
+    </a>
+
+</form>
+
+{% endblock %}
