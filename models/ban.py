@@ -52,5 +52,5 @@ class Ban(db.Model):
 
     khu_vuc = db.relationship(
         'KhuVuc',
-        backref='danh_sach_ban'
+        back_populates='ban'
     )

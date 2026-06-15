@@ -22,3 +22,9 @@ class KhuVuc(db.Model):
         db.Integer,
         nullable=False
     )
+
+    ban = db.relationship(
+        'Ban',
+        back_populates='khu_vuc',
+        lazy=True
+    )

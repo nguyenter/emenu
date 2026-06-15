@@ -2,33 +2,40 @@
 
 {% block content %}
 
-<h2>Thu ngân</h2>
+<h2>Chọn bàn</h2>
 
-<div class="row">
+{% for khu_vuc in ds_khu_vuc %}
 
-    <div class="col-md-4">
+<div class="card mb-4">
 
-        <div class="card">
+    <div class="card-header bg-primary text-white">
 
-            <div class="card-header">
+        {{ khu_vuc.ten_khu_vuc }}
 
-                Bàn
+    </div>
 
-            </div>
+    <div class="card-body">
 
-            <div class="card-body">
+        <div class="row">
 
-                {% for ban in ds_ban %}
+            {% for ban in khu_vuc.ban %}
+
+            <div class="col-md-2 mb-3">
 
                 <a href="/cashier/chon-ban/{{ ban.id }}"
-                   class="btn w-100 mb-2
+                   class="btn w-100
+
                    {% if ban.trang_thai == 'TRONG' %}
                        btn-success
                    {% else %}
                        btn-danger
                    {% endif %}">
 
-                    {{ ban.ten_ban }}
+                    <strong>
+
+                        {{ ban.ten_ban }}
+
+                    </strong>
 
                     <br>
 
@@ -36,71 +43,16 @@
 
                 </a>
 
-                {% endfor %}
-
             </div>
 
-        </div>
-
-    </div>
-
-
-    <div class="col-md-8">
-
-        <div class="card">
-
-            <div class="card-header">
-
-                Thực đơn
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="row">
-
-                    {% for mon in ds_hang_hoa %}
-
-                    <div class="col-md-4 mb-3">
-
-                        <div class="card">
-
-                            <div class="card-body text-center">
-
-                                <strong>
-
-                                    {{ mon.ten_hang }}
-
-                                </strong>
-
-                                <br>
-
-                                {{ "{:,.0f}".format(mon.gia_ban) }} đ
-
-                                <br><br>
-
-                                <button class="btn btn-primary">
-
-                                    Chọn
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    {% endfor %}
-
-                </div>
-
-            </div>
+            {% endfor %}
 
         </div>
 
     </div>
 
 </div>
+
+{% endfor %}
 
 {% endblock %}

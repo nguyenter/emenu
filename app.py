@@ -121,7 +121,9 @@ def cashier():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    ds_ban = Ban.query.order_by(Ban.so_thu_tu).all()
+    ds_khu_vuc = KhuVuc.query.order_by(
+        KhuVuc.so_thu_tu
+    ).all()
 
     ds_hang_hoa = HangHoa.query.join(
         NhomHang,
@@ -133,8 +135,7 @@ def cashier():
 
     return render_template(
         'cashier.html',
-        ds_ban=ds_ban,
-        ds_hang_hoa=ds_hang_hoa
+        ds_khu_vuc=ds_khu_vuc
     )
 
 @app.route('/logout')
@@ -308,12 +309,33 @@ def chi_tiet_hoa_don(hoa_don_id):
         hoa_don_id
     )
 
-    ds_mon = HangHoa.query.join(
+    ds_mon_an = HangHoa.query.join(
         NhomHang,
         HangHoa.nhom_hang_id == NhomHang.id
     ).filter(
         HangHoa.trang_thai == True,
-        NhomHang.trang_thai == True
+        NhomHang.trang_thai == True,
+        HangHoa.loai_thuc_don == 'MON_AN'
+    ).all()
+
+
+    ds_do_uong = HangHoa.query.join(
+        NhomHang,
+        HangHoa.nhom_hang_id == NhomHang.id
+    ).filter(
+        HangHoa.trang_thai == True,
+        NhomHang.trang_thai == True,
+        HangHoa.loai_thuc_don == 'DO_UONG'
+    ).all()
+
+
+    ds_combo = HangHoa.query.join(
+        NhomHang,
+        HangHoa.nhom_hang_id == NhomHang.id
+    ).filter(
+        HangHoa.trang_thai == True,
+        NhomHang.trang_thai == True,
+        HangHoa.loai_thuc_don == 'COMBO'
     ).all()
 
     ds_chi_tiet = ChiTietHoaDon.query.filter_by(
@@ -323,7 +345,9 @@ def chi_tiet_hoa_don(hoa_don_id):
     return render_template(
         'chi_tiet_hoa_don.html',
         hoa_don=hoa_don,
-        ds_mon=ds_mon,
+        ds_mon_an=ds_mon_an,
+        ds_do_uong=ds_do_uong,
+        ds_combo=ds_combo,
         ds_chi_tiet=ds_chi_tiet
     )
 

@@ -3,6 +3,7 @@
 {% block content %}
 
 <h2>Hóa đơn {{ hoa_don.ma_hoa_don }}</h2>
+
 <br>
 
 <a href="/cashier/them-khach-hang/{{ hoa_don.id }}"
@@ -17,8 +18,11 @@
     <span class="ms-3">
 
         Khách hàng:
+
         <strong>
+
             {{ hoa_don.khach_hang.ten_khach_hang }}
+
         </strong>
 
     </span>
@@ -29,6 +33,7 @@
 
 <div class="row">
 
+    <!-- Thực đơn -->
     <div class="col-md-7">
 
         <div class="card">
@@ -41,42 +46,184 @@
 
             <div class="card-body">
 
-                <div class="row">
+                <!-- Tabs -->
+                <ul class="nav nav-tabs mb-3">
 
-                    {% for mon in ds_mon %}
+                    <li class="nav-item">
 
-                    <div class="col-md-4 mb-3">
+                        <button class="nav-link active"
+                                data-bs-toggle="tab"
+                                data-bs-target="#mon-an">
 
-                        <div class="card">
+                            Món ăn
 
-                            <div class="card-body text-center">
+                        </button>
 
-                                <strong>
+                    </li>
 
-                                    {{ mon.ten_hang }}
+                    <li class="nav-item">
 
-                                </strong>
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#do-uong">
 
-                                <br>
+                            Đồ uống
 
-                                {{ "{:,.0f}".format(mon.gia_ban) }} đ
+                        </button>
 
-                                <br><br>
+                    </li>
 
-                                <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
-                                   class="btn btn-primary">
+                    <li class="nav-item">
 
-                                    Chọn
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#combo">
 
-                                </a>
+                            Combo
+
+                        </button>
+
+                    </li>
+
+                </ul>
+
+                <!-- Nội dung tab -->
+                <div class="tab-content">
+
+                    <!-- Món ăn -->
+                    <div class="tab-pane fade show active"
+                         id="mon-an">
+
+                        <div class="row">
+
+                            {% for mon in ds_mon_an %}
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="card">
+
+                                    <div class="card-body text-center">
+
+                                        <strong>
+
+                                            {{ mon.ten_hang }}
+
+                                        </strong>
+
+                                        <br>
+
+                                        {{ "{:,.0f}".format(mon.gia_ban) }} đ
+
+                                        <br><br>
+
+                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
+                                           class="btn btn-primary">
+
+                                            Chọn
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
 
                             </div>
+
+                            {% endfor %}
 
                         </div>
 
                     </div>
 
-                    {% endfor %}
+                    <!-- Đồ uống -->
+                    <div class="tab-pane fade"
+                         id="do-uong">
+
+                        <div class="row">
+
+                            {% for mon in ds_do_uong %}
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="card">
+
+                                    <div class="card-body text-center">
+
+                                        <strong>
+
+                                            {{ mon.ten_hang }}
+
+                                        </strong>
+
+                                        <br>
+
+                                        {{ "{:,.0f}".format(mon.gia_ban) }} đ
+
+                                        <br><br>
+
+                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
+                                           class="btn btn-primary">
+
+                                            Chọn
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Combo -->
+                    <div class="tab-pane fade"
+                         id="combo">
+
+                        <div class="row">
+
+                            {% for mon in ds_combo %}
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="card">
+
+                                    <div class="card-body text-center">
+
+                                        <strong>
+
+                                            {{ mon.ten_hang }}
+
+                                        </strong>
+
+                                        <br>
+
+                                        {{ "{:,.0f}".format(mon.gia_ban) }} đ
+
+                                        <br><br>
+
+                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
+                                           class="btn btn-primary">
+
+                                            Chọn
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -86,6 +233,7 @@
 
     </div>
 
+    <!-- Chi tiết hóa đơn -->
     <div class="col-md-5">
 
         <div class="card">
