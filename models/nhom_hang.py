@@ -25,3 +25,8 @@ class NhomHang(db.Model):
         db.Integer,
         nullable=False
     )
+
+    trang_thai = db.Column(
+        db.Boolean,
+        default=True
+    )

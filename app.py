@@ -123,8 +123,12 @@ def cashier():
 
     ds_ban = Ban.query.order_by(Ban.so_thu_tu).all()
 
-    ds_hang_hoa = HangHoa.query.filter_by(
-        trang_thai=True
+    ds_hang_hoa = HangHoa.query.join(
+        NhomHang,
+        HangHoa.nhom_hang_id == NhomHang.id
+    ).filter(
+        HangHoa.trang_thai == True,
+        NhomHang.trang_thai == True
     ).all()
 
     return render_template(
@@ -304,8 +308,12 @@ def chi_tiet_hoa_don(hoa_don_id):
         hoa_don_id
     )
 
-    ds_mon = HangHoa.query.filter_by(
-        trang_thai=True
+    ds_mon = HangHoa.query.join(
+        NhomHang,
+        HangHoa.nhom_hang_id == NhomHang.id
+    ).filter(
+        HangHoa.trang_thai == True,
+        NhomHang.trang_thai == True
     ).all()
 
     ds_chi_tiet = ChiTietHoaDon.query.filter_by(
@@ -1123,10 +1131,10 @@ def nhom_hang():
 def them_nhom_hang():
 
     if request.method == 'POST':
-
         nhom_hang = NhomHang(
             ten_nhom=request.form['ten_nhom'],
             so_thu_tu=request.form['so_thu_tu'],
+            trang_thai=True,
             chi_nhanh_id=1
         )
 
@@ -1159,6 +1167,10 @@ def sua_nhom_hang(id):
         nhom.ten_nhom = request.form['ten_nhom']
 
         nhom.so_thu_tu = request.form['so_thu_tu']
+
+        nhom.trang_thai = (
+                request.form['trang_thai'] == '1'
+        )
 
         db.session.commit()
 
