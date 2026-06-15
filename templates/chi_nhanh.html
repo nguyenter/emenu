@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Quản lý chi nhánh</h2>
+
+<a href="/chi-nhanh/them"
+   class="btn btn-primary mb-3">
+
+    Thêm chi nhánh
+
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Tên chi nhánh</th>
+
+            <th>Địa chỉ</th>
+
+            <th>Điện thoại</th>
+
+            <th>Trạng thái</th>
+
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for cn in ds_chi_nhanh %}
+
+        <tr>
+
+            <td>{{ cn.id }}</td>
+
+            <td>{{ cn.ten_chi_nhanh }}</td>
+
+            <td>{{ cn.dia_chi }}</td>
+
+            <td>{{ cn.dien_thoai }}</td>
+
+            <td>
+
+                {% if cn.trang_thai %}
+
+                    Hoạt động
+
+                {% else %}
+
+                    Ngừng hoạt động
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a href="/chi-nhanh/sua/{{ cn.id }}"
+                   class="btn btn-warning btn-sm">
+
+                    Sửa
+
+                </a>
+
+                <a href="/chi-nhanh/xoa/{{ cn.id }}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Xóa chi nhánh?')">
+
+                    Xóa
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

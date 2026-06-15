@@ -6,11 +6,22 @@ class NhomHang(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    ten_nhom = db.Column(db.String(100),
-                         nullable=False)
+    ma_nhom = db.Column(
+        db.String(20),
+        unique=True
+    )
 
-    so_thu_tu = db.Column(db.Integer,
-                          default=0)
+    ten_nhom = db.Column(
+        db.String(100),
+        nullable=False
+    )
 
-    chi_nhanh_id = db.Column(db.Integer,
-                             nullable=False)
+    so_thu_tu = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    chi_nhanh_id = db.Column(
+        db.Integer,
+        nullable=False
+    )

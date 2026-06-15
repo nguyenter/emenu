@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Quản lý hóa đơn</h2>
+
+<form method="GET"
+      class="row mb-3">
+
+    <div class="col-md-4">
+
+        <input type="text"
+               name="keyword"
+               class="form-control"
+               placeholder="Mã hóa đơn"
+               value="{{ request.args.get('keyword', '') }}">
+
+    </div>
+
+    <div class="col-md-3">
+
+        <input type="date"
+               name="ngay"
+               class="form-control"
+               value="{{ request.args.get('ngay', '') }}">
+
+    </div>
+
+    <div class="col-md-3">
+
+        <select name="phuong_thuc"
+                class="form-control">
+
+            <option value="">
+                Tất cả
+            </option>
+
+            <option value="TIEN_MAT">
+                Tiền mặt
+            </option>
+
+            <option value="CHUYEN_KHOAN">
+                Chuyển khoản
+            </option>
+
+            <option value="QR">
+                QR
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button class="btn btn-primary w-100">
+
+            Tìm kiếm
+
+        </button>
+
+    </div>
+
+</form>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã HD</th>
+
+            <th>Bàn</th>
+
+            <th>Khách hàng</th>
+
+            <th>Tổng tiền</th>
+
+            <th>Thanh toán</th>
+
+            <th>Trạng thái</th>
+
+            <th>Ngày tạo</th>
+
+            <th></th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for hd in ds_hoa_don %}
+
+        <tr>
+
+            <td>
+
+                {{ hd.ma_hoa_don }}
+
+            </td>
+
+            <td>
+
+                {{ hd.ban.ten_ban if hd.ban else '' }}
+
+            </td>
+
+            <td>
+
+                {% if hd.khach_hang %}
+
+                    {{ hd.khach_hang.ten_khach_hang }}
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {{ "{:,.0f}".format(hd.tong_tien) }}
+
+            </td>
+
+            <td>
+
+                {{ hd.phuong_thuc_thanh_toan }}
+
+            </td>
+
+            <td>
+
+                {{ hd.trang_thai }}
+
+            </td>
+
+            <td>
+
+                {{ hd.created_at.strftime('%d/%m/%Y %H:%M') }}
+
+            </td>
+
+            <td>
+
+                <a href="/hoa-don/{{ hd.id }}"
+                   class="btn btn-info btn-sm">
+
+                    Chi tiết
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

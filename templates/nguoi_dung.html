@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Quản lý người dùng</h2>
+
+<a href="/nguoi-dung/them"
+   class="btn btn-primary mb-3">
+
+    Thêm người dùng
+
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên đăng nhập</th>
+            <th>Họ tên</th>
+            <th>Vai trò</th>
+            <th>Chi nhánh</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for nd in ds_nguoi_dung %}
+
+        <tr>
+
+            <td>{{ nd.id }}</td>
+
+            <td>{{ nd.ten_dang_nhap }}</td>
+
+            <td>{{ nd.ho_ten }}</td>
+
+            <td>{{ nd.vai_tro }}</td>
+
+            <td>{{ nd.chi_nhanh.ten_chi_nhanh }}</td>
+
+            <td>
+
+                {% if nd.trang_thai %}
+
+                    Hoạt động
+
+                {% else %}
+
+                    Khóa
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a href="/nguoi-dung/sua/{{ nd.id }}"
+                   class="btn btn-warning btn-sm">
+
+                    Sửa
+
+                </a>
+
+                <a href="/nguoi-dung/xoa/{{ nd.id }}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Xóa người dùng?')">
+
+                    Xóa
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

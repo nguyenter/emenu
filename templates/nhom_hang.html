@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Quản lý nhóm hàng</h2>
+
+<a href="/nhom-hang/them"
+   class="btn btn-primary mb-3">
+
+    Thêm nhóm hàng
+
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Mã nhóm</th>
+            <th>Tên nhóm</th>
+            <th>Thứ tự</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for nhom in ds_nhom_hang %}
+
+        <tr>
+
+            <td>{{ nhom.ma_nhom }}</td>
+
+            <td>{{ nhom.ten_nhom }}</td>
+
+            <td>{{ nhom.so_thu_tu }}</td>
+
+            <td>
+
+                <a href="/nhom-hang/sua/{{ nhom.id }}"
+                   class="btn btn-warning btn-sm">
+
+                    Sửa
+
+                </a>
+
+                <a href="/nhom-hang/xoa/{{ nhom.id }}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Xóa nhóm hàng?')">
+
+                    Xóa
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Sửa khách hàng</h2>
+
+<form method="POST">
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+
+            <label>Mã khách hàng</label>
+
+            <input type="text"
+                   name="ma_khach_hang"
+                   class="form-control"
+                   value="{{ khach_hang.ma_khach_hang }}"
+                   required>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+
+            <label>Tên khách hàng</label>
+
+            <input type="text"
+                   name="ten_khach_hang"
+                   class="form-control"
+                   value="{{ khach_hang.ten_khach_hang }}"
+                   required>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+
+            <label>Điện thoại</label>
+
+            <input type="text"
+                   name="dien_thoai"
+                   class="form-control"
+                   value="{{ khach_hang.dien_thoai or '' }}">
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+
+            <label>Giới tính</label>
+
+            <select name="gioi_tinh"
+                    class="form-control">
+
+                <option value="NAM"
+                    {% if khach_hang.gioi_tinh == 'NAM' %}
+                        selected
+                    {% endif %}>
+                    Nam
+                </option>
+
+                <option value="NU"
+                    {% if khach_hang.gioi_tinh == 'NU' %}
+                        selected
+                    {% endif %}>
+                    Nữ
+                </option>
+
+                <option value="KHAC"
+                    {% if khach_hang.gioi_tinh == 'KHAC' %}
+                        selected
+                    {% endif %}>
+                    Khác
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+
+            <label>Ngày sinh</label>
+
+            <input type="date"
+                   name="ngay_sinh"
+                   class="form-control"
+                   value="{{ khach_hang.ngay_sinh }}">
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+
+            <label>Địa chỉ</label>
+
+            <input type="text"
+                   name="dia_chi"
+                   class="form-control"
+                   value="{{ khach_hang.dia_chi or '' }}">
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+
+            <label>Tỉnh/Thành phố</label>
+
+            <input type="text"
+                   name="tinh_thanh"
+                   class="form-control"
+                   value="{{ khach_hang.tinh_thanh or '' }}">
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+
+            <label>Phường/Xã</label>
+
+            <input type="text"
+                   name="phuong_xa"
+                   class="form-control"
+                   value="{{ khach_hang.phuong_xa or '' }}">
+
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Ghi chú</label>
+
+        <textarea name="ghi_chu"
+                  class="form-control">{{ khach_hang.ghi_chu or '' }}</textarea>
+
+    </div>
+
+    <button class="btn btn-primary">
+
+        Cập nhật
+
+    </button>
+
+    <a href="/khach-hang"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>
+
+{% endblock %}

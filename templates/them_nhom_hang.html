@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Thêm nhóm hàng</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+
+        <label>Tên nhóm</label>
+
+        <input type="text"
+               name="ten_nhom"
+               class="form-control"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Thứ tự</label>
+
+        <input type="number"
+               name="so_thu_tu"
+               class="form-control"
+               value="0">
+
+    </div>
+
+    <button class="btn btn-success">
+
+        Lưu
+
+    </button>
+
+    <a href="/nhom-hang"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>
+
+{% endblock %}

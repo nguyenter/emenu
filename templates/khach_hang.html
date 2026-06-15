@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Quản lý khách hàng</h2>
+
+<form method="GET"
+      class="row mb-3">
+
+    <div class="col-md-4">
+
+        <input type="text"
+               name="keyword"
+               class="form-control"
+               placeholder="Tên, mã hoặc số điện thoại"
+               value="{{ request.args.get('keyword', '') }}">
+
+    </div>
+
+    <div class="col-md-3">
+
+        <select name="gioi_tinh"
+                class="form-control">
+
+            <option value="">
+                Tất cả giới tính
+            </option>
+
+            <option value="NAM"
+                {% if request.args.get('gioi_tinh') == 'NAM' %}
+                    selected
+                {% endif %}>
+                Nam
+            </option>
+
+            <option value="NU"
+                {% if request.args.get('gioi_tinh') == 'NU' %}
+                    selected
+                {% endif %}>
+                Nữ
+            </option>
+
+            <option value="KHAC"
+                {% if request.args.get('gioi_tinh') == 'KHAC' %}
+                    selected
+                {% endif %}>
+                Khác
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button class="btn btn-primary">
+
+            Tìm kiếm
+
+        </button>
+
+    </div>
+
+    <div class="col-md-3 text-end">
+
+        <a href="/khach-hang/them"
+           class="btn btn-success">
+
+            Thêm khách hàng
+
+        </a>
+
+    </div>
+
+</form>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã KH</th>
+
+            <th>Tên khách hàng</th>
+
+            <th>Điện thoại</th>
+
+            <th>Giới tính</th>
+
+            <th>Ngày sinh</th>
+
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for kh in ds_khach_hang %}
+
+        <tr>
+
+            <td>
+
+                {{ kh.ma_khach_hang }}
+
+            </td>
+
+            <td>
+
+                {{ kh.ten_khach_hang }}
+
+            </td>
+
+            <td>
+
+                {{ kh.dien_thoai }}
+
+            </td>
+
+            <td>
+
+                {{ kh.gioi_tinh }}
+
+            </td>
+
+            <td>
+
+                {{ kh.ngay_sinh }}
+
+            </td>
+
+            <td>
+
+                <a href="/khach-hang/sua/{{ kh.id }}"
+                   class="btn btn-warning btn-sm">
+
+                    Sửa
+
+                </a>
+
+                <a href="/khach-hang/xoa/{{ kh.id }}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Xóa khách hàng này?')">
+
+                    Xóa
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

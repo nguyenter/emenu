@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Sửa người dùng</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+
+        <label>Tên đăng nhập</label>
+
+        <input type="text"
+               name="ten_dang_nhap"
+               class="form-control"
+               value="{{ nguoi_dung.ten_dang_nhap }}"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Mật khẩu mới</label>
+
+        <input type="text"
+               name="mat_khau"
+               class="form-control">
+
+        <small>
+            Để trống nếu không thay đổi mật khẩu
+        </small>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Họ tên</label>
+
+        <input type="text"
+               name="ho_ten"
+               class="form-control"
+               value="{{ nguoi_dung.ho_ten }}"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Vai trò</label>
+
+        <select name="vai_tro"
+                class="form-control">
+
+            <option value="QUAN_LY"
+            {% if nguoi_dung.vai_tro == 'QUAN_LY' %}
+                selected
+            {% endif %}>
+                Quản lý
+            </option>
+
+            <option value="NHAN_VIEN"
+            {% if nguoi_dung.vai_tro == 'NHAN_VIEN' %}
+                selected
+            {% endif %}>
+                Nhân viên
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Chi nhánh</label>
+
+        <select name="chi_nhanh_id"
+                class="form-control">
+
+            {% for cn in ds_chi_nhanh %}
+
+            <option value="{{ cn.id }}"
+            {% if nguoi_dung.chi_nhanh_id == cn.id %}
+                selected
+            {% endif %}>
+
+                {{ cn.ten_chi_nhanh }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Trạng thái</label>
+
+        <select name="trang_thai"
+                class="form-control">
+
+            <option value="1"
+            {% if nguoi_dung.trang_thai %}
+                selected
+            {% endif %}>
+                Hoạt động
+            </option>
+
+            <option value="0"
+            {% if not nguoi_dung.trang_thai %}
+                selected
+            {% endif %}>
+                Khóa
+            </option>
+
+        </select>
+
+    </div>
+
+    <button class="btn btn-success">
+
+        Cập nhật
+
+    </button>
+
+    <a href="/nguoi-dung"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>
+
+{% endblock %}

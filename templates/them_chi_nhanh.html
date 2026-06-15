@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Thêm chi nhánh</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+
+        <label>Tên chi nhánh</label>
+
+        <input type="text"
+               name="ten_chi_nhanh"
+               class="form-control"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Địa chỉ</label>
+
+        <input type="text"
+               name="dia_chi"
+               class="form-control">
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Điện thoại</label>
+
+        <input type="text"
+               name="dien_thoai"
+               class="form-control">
+
+    </div>
+
+    <button class="btn btn-success">
+
+        Lưu
+
+    </button>
+
+</form>
+
+{% endblock %}

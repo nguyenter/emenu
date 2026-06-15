@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Thêm người dùng</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+
+        <label>Tên đăng nhập</label>
+
+        <input type="text"
+               name="ten_dang_nhap"
+               class="form-control"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Mật khẩu</label>
+
+        <input type="text"
+               name="mat_khau"
+               class="form-control"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Họ tên</label>
+
+        <input type="text"
+               name="ho_ten"
+               class="form-control"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Vai trò</label>
+
+        <select name="vai_tro"
+                class="form-control">
+
+            <option value="QUAN_LY">
+
+                Quản lý
+
+            </option>
+
+            <option value="NHAN_VIEN">
+
+                Nhân viên
+
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Chi nhánh</label>
+
+        <select name="chi_nhanh_id"
+                class="form-control">
+
+            {% for cn in ds_chi_nhanh %}
+
+            <option value="{{ cn.id }}">
+
+                {{ cn.ten_chi_nhanh }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+    </div>
+
+    <button class="btn btn-success">
+
+        Lưu
+
+    </button>
+
+</form>
+
+{% endblock %}

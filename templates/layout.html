@@ -23,6 +23,8 @@
 
             <ul class="nav flex-column">
 
+                {% if session.get('vai_tro') == 'QUAN_LY' %}
+
                 <li class="nav-item">
                     <a class="nav-link text-white"
                        href="/dashboard">
@@ -34,6 +36,13 @@
                     <a class="nav-link text-white"
                        href="/hang-hoa">
                         Quản lý hàng hóa
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white"
+                       href="/nhom-hang">
+                        Nhóm hàng
                     </a>
                 </li>
 
@@ -60,13 +69,6 @@
 
                 <li class="nav-item">
                     <a class="nav-link text-white"
-                       href="/bao-cao">
-                        Báo cáo
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white"
                        href="/nguoi-dung">
                         Người dùng
                     </a>
@@ -79,14 +81,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link text-warning"
-                       href="/cashier">
-
-                        Thu ngân
-
-                    </a>
-                </li>
+                {% endif %}
 
                 <li class="nav-item mt-5">
                     <a class="nav-link text-danger"

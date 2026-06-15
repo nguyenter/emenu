@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Báo cáo doanh thu</h2>
+
+<form method="GET">
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+
+            <label>Từ ngày</label>
+
+            <input type="date"
+                   name="tu_ngay"
+                   class="form-control"
+                   value="{{ request.args.get('tu_ngay','') }}">
+
+        </div>
+
+        <div class="col-md-3">
+
+            <label>Đến ngày</label>
+
+            <input type="date"
+                   name="den_ngay"
+                   class="form-control"
+                   value="{{ request.args.get('den_ngay','') }}">
+
+        </div>
+
+        <div class="col-md-2">
+
+            <label>&nbsp;</label>
+
+            <button class="btn btn-primary w-100">
+
+                Xem báo cáo
+
+            </button>
+
+        </div>
+
+    </div>
+
+</form>
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h5>Tổng doanh thu</h5>
+
+                <h3>
+
+                    {{ "{:,.0f}".format(tong_doanh_thu) }} đ
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h5>Số hóa đơn</h5>
+
+                <h3>
+
+                    {{ tong_hoa_don }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h6>Tiền mặt</h6>
+
+                {{ "{:,.0f}".format(tien_mat) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h6>Chuyển khoản</h6>
+
+                {{ "{:,.0f}".format(chuyen_khoan) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h6>QR</h6>
+
+                {{ "{:,.0f}".format(qr) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã HĐ</th>
+
+            <th>Ngày</th>
+
+            <th>Tổng tiền</th>
+
+            <th>Thanh toán</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for hd in ds_hoa_don %}
+
+        <tr>
+
+            <td>{{ hd.ma_hoa_don }}</td>
+
+            <td>{{ hd.created_at.strftime('%d/%m/%Y') }}</td>
+
+            <td>
+
+                {{ "{:,.0f}".format(hd.tong_tien) }}
+
+            </td>
+
+            <td>
+
+                {{ hd.phuong_thuc_thanh_toan }}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

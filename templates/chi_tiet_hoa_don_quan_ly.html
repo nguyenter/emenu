@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Chi tiết hóa đơn</h2>
+
+<div class="card mb-3">
+
+    <div class="card-body">
+
+        <p>
+            <strong>Mã hóa đơn:</strong>
+            {{ hoa_don.ma_hoa_don }}
+        </p>
+
+        <p>
+            <strong>Bàn:</strong>
+            {{ hoa_don.ban.ten_ban if hoa_don.ban else '' }}
+        </p>
+
+        <p>
+            <strong>Khách hàng:</strong>
+
+            {% if hoa_don.khach_hang %}
+
+                {{ hoa_don.khach_hang.ten_khach_hang }}
+
+            {% else %}
+
+                Khách lẻ
+
+            {% endif %}
+
+        </p>
+
+        <p>
+            <strong>Phương thức thanh toán:</strong>
+            {{ hoa_don.phuong_thuc_thanh_toan }}
+        </p>
+
+        <p>
+            <strong>Trạng thái:</strong>
+            {{ hoa_don.trang_thai }}
+        </p>
+
+    </div>
+
+</div>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Món</th>
+
+            <th>Số lượng</th>
+
+            <th>Đơn giá</th>
+
+            <th>Thành tiền</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for ct in ds_chi_tiet %}
+
+        <tr>
+
+            <td>
+
+                {{ ct.hang_hoa.ten_hang }}
+
+            </td>
+
+            <td>
+
+                {{ ct.so_luong }}
+
+            </td>
+
+            <td>
+
+                {{ "{:,.0f}".format(ct.don_gia) }}
+
+            </td>
+
+            <td>
+
+                {{ "{:,.0f}".format(ct.thanh_tien) }}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<div class="text-end">
+
+    <h4>
+
+        Tổng tiền:
+
+        {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
+
+    </h4>
+
+</div>
+
+<a href="/hoa-don"
+   class="btn btn-secondary">
+
+    Quay lại
+
+</a>
+
+{% endblock %}

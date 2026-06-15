@@ -24,6 +24,7 @@ class HoaDon(db.Model):
 
     nguoi_dung_id = db.Column(
         db.Integer,
+        db.ForeignKey('nguoi_dung.id'),
         nullable=False
     )
 
@@ -54,6 +55,19 @@ class HoaDon(db.Model):
         nullable=False
     )
 
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
+
     khach_hang = db.relationship(
         'KhachHang'
+    )
+
+    ban = db.relationship(
+        'Ban'
+    )
+
+    nguoi_dung = db.relationship(
+        'NguoiDung'
     )

@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Sửa chi nhánh</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+
+        <label>Tên chi nhánh</label>
+
+        <input type="text"
+               name="ten_chi_nhanh"
+               class="form-control"
+               value="{{ chi_nhanh.ten_chi_nhanh }}"
+               required>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Địa chỉ</label>
+
+        <input type="text"
+               name="dia_chi"
+               class="form-control"
+               value="{{ chi_nhanh.dia_chi or '' }}">
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Điện thoại</label>
+
+        <input type="text"
+               name="dien_thoai"
+               class="form-control"
+               value="{{ chi_nhanh.dien_thoai or '' }}">
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Trạng thái</label>
+
+        <select name="trang_thai"
+                class="form-control">
+
+            <option value="1"
+            {% if chi_nhanh.trang_thai %}
+                selected
+            {% endif %}>
+
+                Hoạt động
+
+            </option>
+
+            <option value="0"
+            {% if not chi_nhanh.trang_thai %}
+                selected
+            {% endif %}>
+
+                Ngừng hoạt động
+
+            </option>
+
+        </select>
+
+    </div>
+
+    <button class="btn btn-success">
+
+        Cập nhật
+
+    </button>
+
+    <a href="/chi-nhanh"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>
+
+{% endblock %}

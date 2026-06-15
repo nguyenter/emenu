@@ -20,8 +20,15 @@ class NguoiDung(db.Model):
                                 'NHAN_VIEN'),
                         nullable=False)
 
-    chi_nhanh_id = db.Column(db.Integer,
-                             nullable=False)
+    chi_nhanh_id = db.Column(
+        db.Integer,
+        db.ForeignKey('chi_nhanh.id'),
+        nullable=False
+    )
+
+    chi_nhanh = db.relationship(
+        'ChiNhanh'
+    )
 
     trang_thai = db.Column(db.Boolean,
                            default=True)
