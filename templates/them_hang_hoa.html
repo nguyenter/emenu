@@ -61,10 +61,16 @@
 
         <label>Giá bán</label>
 
-        <input type="number"
+        <input type="text"
                name="gia_ban"
-               class="form-control"
+               class="form-control gia-ban-input"
+               inputmode="numeric"
+               placeholder="Ví dụ: 45.000 hoặc 45,000"
                required>
+
+        <small class="text-muted">
+            Có thể dùng dấu . hoặc , để tách hàng nghìn (vd: 45.000)
+        </small>
 
     </div>
 
@@ -96,6 +102,13 @@
         Lưu
 
     </button>
+
+    <a href="/hang-hoa"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
 
 </form>
 

@@ -17,6 +17,38 @@ def dem_admin():
     return NguoiDung.query.filter_by(vai_tro='ADMIN').count()
 
 
+def xoa_ban_an_toan(ban):
+    """
+    Xóa bàn an toàn.
+    - Không xóa khi bàn đang phục vụ
+    - Gỡ liên kết hóa đơn cũ rồi mới xóa bàn
+    """
+    if ban.trang_thai == 'DANG_PHUC_VU':
+        return False, (
+            f'Không thể xóa "{ban.ten_ban}" '
+            'vì đang phục vụ'
+        )
+
+    dang_phuc_vu = HoaDon.query.filter_by(
+        ban_id=ban.id,
+        trang_thai='DANG_PHUC_VU'
+    ).count()
+
+    if dang_phuc_vu > 0:
+        return False, (
+            f'Không thể xóa "{ban.ten_ban}" '
+            'vì còn hóa đơn đang phục vụ'
+        )
+
+    HoaDon.query.filter_by(ban_id=ban.id).update(
+        {HoaDon.ban_id: None},
+        synchronize_session=False
+    )
+
+    db.session.delete(ban)
+    return True, None
+
+
 def xoa_hoa_don_an_toan(hoa_don):
     """Xóa hóa đơn và chi tiết; mở lại bàn nếu đang phục vụ."""
     if hoa_don.ban_id and hoa_don.trang_thai == 'DANG_PHUC_VU':

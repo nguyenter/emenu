@@ -15,7 +15,7 @@
 
     <div class="card-body">
 
-        <div class="btn-group mb-3"
+        <div class="btn-group mb-3 d-flex flex-wrap"
              role="group">
 
             <input type="radio"
@@ -26,7 +26,7 @@
                    {% if loai == 'ngay' %}checked{% endif %}
                    onchange="doiLoaiBaoCao()">
 
-            <label class="btn btn-outline-primary"
+            <label class="btn btn-outline-primary flex-fill"
                    for="loaiNgay">
                 Theo ngày
             </label>
@@ -39,7 +39,7 @@
                    {% if loai == 'tuan' %}checked{% endif %}
                    onchange="doiLoaiBaoCao()">
 
-            <label class="btn btn-outline-primary"
+            <label class="btn btn-outline-primary flex-fill"
                    for="loaiTuan">
                 Theo tuần
             </label>
@@ -52,7 +52,7 @@
                    {% if loai == 'thang' %}checked{% endif %}
                    onchange="doiLoaiBaoCao()">
 
-            <label class="btn btn-outline-primary"
+            <label class="btn btn-outline-primary flex-fill"
                    for="loaiThang">
                 Theo tháng
             </label>
@@ -65,16 +65,16 @@
                    {% if loai == 'nam' %}checked{% endif %}
                    onchange="doiLoaiBaoCao()">
 
-            <label class="btn btn-outline-primary"
+            <label class="btn btn-outline-primary flex-fill"
                    for="loaiNam">
                 Theo năm
             </label>
 
         </div>
 
-        <div class="row align-items-end">
+        <div class="row align-items-end g-2">
 
-            <div class="col-md-4 mb-2"
+            <div class="col-12 col-md-4 mb-2"
                  id="boxNgay"
                  {% if loai != 'ngay' %}style="display:none"{% endif %}>
 
@@ -88,7 +88,7 @@
 
             </div>
 
-            <div class="col-md-4 mb-2"
+            <div class="col-12 col-md-4 mb-2"
                  id="boxTuan"
                  {% if loai != 'tuan' %}style="display:none"{% endif %}>
 
@@ -102,7 +102,7 @@
 
             </div>
 
-            <div class="col-md-4 mb-2"
+            <div class="col-12 col-md-4 mb-2"
                  id="boxThang"
                  {% if loai != 'thang' %}style="display:none"{% endif %}>
 
@@ -116,7 +116,7 @@
 
             </div>
 
-            <div class="col-md-4 mb-2"
+            <div class="col-12 col-md-4 mb-2"
                  id="boxNam"
                  {% if loai != 'nam' %}style="display:none"{% endif %}>
 
@@ -139,12 +139,22 @@
 
             </div>
 
-            <div class="col-md-3 mb-2">
+            <div class="col-12 col-md-3 mb-2">
 
                 <button type="submit"
                         class="btn btn-primary w-100">
                     Xem báo cáo
                 </button>
+
+            </div>
+
+            <div class="col-12 col-md-3 mb-2">
+
+                <a id="btnXuatExcel"
+                   href="/bao-cao/xuat-excel?loai={{ loai }}&ngay={{ ngay }}&tuan={{ tuan }}&thang={{ thang }}&nam={{ nam }}"
+                   class="btn btn-success w-100">
+                    Xuất Excel
+                </a>
 
             </div>
 
@@ -163,19 +173,34 @@ function doiLoaiBaoCao() {
     document.getElementById('boxNam').style.display = loai === 'nam' ? '' : 'none';
     document.getElementById('formBaoCao').submit();
 }
+
+(function () {
+    var form = document.getElementById('formBaoCao');
+    var btn = document.getElementById('btnXuatExcel');
+    if (!form || !btn) return;
+
+    form.addEventListener('change', function () {
+        var data = new FormData(form);
+        var params = new URLSearchParams();
+        data.forEach(function (value, key) {
+            params.append(key, value);
+        });
+        btn.href = '/bao-cao/xuat-excel?' + params.toString();
+    });
+})();
 </script>
 
-<div class="row mb-4">
+<div class="row g-3 mb-4">
 
-    <div class="col-md-3">
+    <div class="col-6 col-lg-3">
 
-        <div class="card">
+        <div class="card h-100">
 
             <div class="card-body">
 
-                <h5>Tổng doanh thu</h5>
+                <h5 class="fs-6">Tổng doanh thu</h5>
 
-                <h3>
+                <h3 class="fs-5 mb-0">
 
                     {{ "{:,.0f}".format(tong_doanh_thu) }} đ
 
@@ -187,15 +212,15 @@ function doiLoaiBaoCao() {
 
     </div>
 
-    <div class="col-md-3">
+    <div class="col-6 col-lg-3">
 
-        <div class="card">
+        <div class="card h-100">
 
             <div class="card-body">
 
-                <h5>Số hóa đơn</h5>
+                <h5 class="fs-6">Số hóa đơn</h5>
 
-                <h3>
+                <h3 class="fs-5 mb-0">
 
                     {{ tong_hoa_don }}
 
@@ -207,15 +232,15 @@ function doiLoaiBaoCao() {
 
     </div>
 
-    <div class="col-md-3">
+    <div class="col-6 col-lg-3">
 
-        <div class="card">
+        <div class="card h-100">
 
             <div class="card-body">
 
                 <h6>Tiền mặt</h6>
 
-                <h4 class="mb-0">
+                <h4 class="fs-6 mb-0">
 
                     {{ "{:,.0f}".format(tien_mat) }} đ
 
@@ -227,15 +252,15 @@ function doiLoaiBaoCao() {
 
     </div>
 
-    <div class="col-md-3">
+    <div class="col-6 col-lg-3">
 
-        <div class="card">
+        <div class="card h-100">
 
             <div class="card-body">
 
                 <h6>Chuyển khoản / QR</h6>
 
-                <h4 class="mb-0">
+                <h4 class="fs-6 mb-0">
 
                     {{ "{:,.0f}".format(chuyen_khoan_qr) }} đ
 
@@ -249,9 +274,9 @@ function doiLoaiBaoCao() {
 
 </div>
 
-<div class="row mb-4">
+<div class="row g-3 mb-4">
 
-    <div class="col-md-6">
+    <div class="col-12 col-lg-6">
 
         <div class="card">
 
@@ -285,7 +310,7 @@ function doiLoaiBaoCao() {
 
     </div>
 
-    <div class="col-md-6">
+    <div class="col-12 col-lg-6">
 
         <div class="card">
 

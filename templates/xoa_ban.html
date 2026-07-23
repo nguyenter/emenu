@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Xóa bàn
+{% endblock %}
+
+{% block content %}
+
+<h2>Xóa bàn</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show"
+         role="alert">
+        {{ message }}
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Đóng"></button>
+    </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<form method="POST"
+      onsubmit="return confirm('Bạn chắc chắn muốn xóa bàn đã chọn?');">
+
+    <div class="mb-3">
+        <label class="form-label">Chọn bàn cần xóa</label>
+
+        <select name="ban_id"
+                class="form-select"
+                required>
+
+            <option value="">
+                -- Chọn bàn --
+            </option>
+
+            {% for kv in ds_khu_vuc %}
+            <optgroup label="{{ kv.ten_khu_vuc }}">
+                {% for ban in kv.ban %}
+                <option value="{{ ban.id }}"
+                        {% if ban.trang_thai == 'DANG_PHUC_VU' %}disabled{% endif %}>
+                    {{ ban.ten_ban }}
+                    {% if ban.trang_thai == 'TRONG' %}
+                        (Trống)
+                    {% elif ban.trang_thai == 'DANG_PHUC_VU' %}
+                        (Đang phục vụ — không xóa được)
+                    {% else %}
+                        ({{ ban.trang_thai }})
+                    {% endif %}
+                </option>
+                {% else %}
+                <option disabled>Chưa có bàn</option>
+                {% endfor %}
+            </optgroup>
+            {% endfor %}
+
+        </select>
+    </div>
+
+    <p class="text-muted">
+        Không thể xóa bàn đang phục vụ. Hóa đơn cũ sẽ được giữ lại nhưng gỡ liên kết bàn.
+    </p>
+
+    <button type="submit"
+            class="btn btn-danger">
+        Xóa bàn
+    </button>
+
+    <a href="/phong-ban"
+       class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>
+
+{% endblock %}

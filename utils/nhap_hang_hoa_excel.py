@@ -97,7 +97,7 @@ def _map_loai_thuc_don(value):
     return aliases.get(text)
 
 
-def _parse_gia(value):
+def parse_gia_ban(value):
     if value is None or value == '':
         raise InvalidOperation('Thiếu giá bán')
     if isinstance(value, (int, float, Decimal)):
@@ -112,7 +112,6 @@ def _parse_gia(value):
         .replace('vnd', '')
     )
 
-
     if re.match(r'^\d{1,3}([.]\d{3})+$', text):
         text = text.replace('.', '')
     elif re.match(r'^\d{1,3}([,]\d{3})+$', text):
@@ -121,6 +120,10 @@ def _parse_gia(value):
         text = text.replace(',', '.')
 
     return Decimal(text)
+
+
+def _parse_gia(value):
+    return parse_gia_ban(value)
 
 
 def _tim_nhom_hang(ten_hoac_ma, chi_nhanh_id=None):

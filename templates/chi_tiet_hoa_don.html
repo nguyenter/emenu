@@ -4,336 +4,186 @@
 
 {% set active_tab = active_tab|default('mon-an') %}
 
-<h2>
+<h2 class="fs-4 fs-md-3">
     Hóa đơn {{ hoa_don.ma_hoa_don }}
     {% if hoa_don.ban %}
-        —
-        Bàn {{ hoa_don.ban.ten_ban }}
+        — Bàn {{ hoa_don.ban.ten_ban }}
         {% if hoa_don.ban_gop %}
-            <small class="text-muted">
+            <small class="text-muted d-block d-md-inline">
                 (đã gộp: {{ hoa_don.ban_gop }})
             </small>
         {% endif %}
     {% endif %}
 </h2>
 
-<br>
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <a href="/cashier/them-khach-hang/{{ hoa_don.id }}"
+       class="btn btn-info">
+        Thêm khách hàng
+    </a>
 
-<a href="/cashier/them-khach-hang/{{ hoa_don.id }}"
-   class="btn btn-info">
-
-    Thêm khách hàng
-
-</a>
-
-{% if hoa_don.khach_hang_id %}
-
-    <span class="ms-3">
-
+    {% if hoa_don.khach_hang_id %}
+    <span>
         Khách hàng:
-
-        <strong>
-
-            {{ hoa_don.khach_hang.ten_khach_hang }}
-
-        </strong>
-
+        <strong>{{ hoa_don.khach_hang.ten_khach_hang }}</strong>
     </span>
-
-{% endif %}
+    {% endif %}
+</div>
 
 <hr>
 
-<div class="row">
+<div class="row g-3"
+     id="cashier-hoa-don"
+     data-hoa-don-id="{{ hoa_don.id }}"
+     data-active-tab="{{ active_tab }}">
 
-    <!-- Thực đơn -->
-    <div class="col-md-7">
-
+    <div class="col-12 col-lg-7 order-2 order-lg-1">
         <div class="card">
-
-            <div class="card-header">
-
-                Thực đơn
-
-            </div>
-
+            <div class="card-header">Thực đơn</div>
             <div class="card-body">
-
-                <!-- Tabs -->
-                <ul class="nav nav-tabs mb-3">
-
+                <ul class="nav nav-tabs mb-3 flex-nowrap overflow-x-auto overflow-y-hidden">
                     <li class="nav-item">
-
-                        <button class="nav-link {% if active_tab == 'mon-an' %}active{% endif %}"
+                        <button class="nav-link text-nowrap {% if active_tab == 'mon-an' %}active{% endif %}"
                                 data-bs-toggle="tab"
-                                data-bs-target="#mon-an">
-
+                                data-bs-target="#mon-an"
+                                type="button">
                             Món ăn
-
                         </button>
-
                     </li>
-
                     <li class="nav-item">
-
-                        <button class="nav-link {% if active_tab == 'do-uong' %}active{% endif %}"
+                        <button class="nav-link text-nowrap {% if active_tab == 'do-uong' %}active{% endif %}"
                                 data-bs-toggle="tab"
-                                data-bs-target="#do-uong">
-
+                                data-bs-target="#do-uong"
+                                type="button">
                             Đồ uống
-
                         </button>
-
                     </li>
-
                     <li class="nav-item">
-
-                        <button class="nav-link {% if active_tab == 'combo' %}active{% endif %}"
+                        <button class="nav-link text-nowrap {% if active_tab == 'combo' %}active{% endif %}"
                                 data-bs-toggle="tab"
-                                data-bs-target="#combo">
-
+                                data-bs-target="#combo"
+                                type="button">
                             Combo
-
                         </button>
-
                     </li>
-
                 </ul>
 
-                <!-- Nội dung tab -->
                 <div class="tab-content">
-
-                    <!-- Món ăn -->
                     <div class="tab-pane fade {% if active_tab == 'mon-an' %}show active{% endif %}"
                          id="mon-an">
-
                         <div class="row">
-
                             {% for mon in ds_mon_an %}
-
-                            <div class="col-md-4 mb-3">
-
-                                <div class="card">
-
+                            <div class="col-6 col-md-4 mb-3">
+                                <div class="card h-100">
                                     <div class="card-body text-center">
-
-                                        <strong>
-
-                                            {{ mon.ten_hang }}
-
-                                        </strong>
-
+                                        <strong>{{ mon.ten_hang }}</strong>
                                         <br>
-
                                         {{ "{:,.0f}".format(mon.gia_ban) }} đ
-
                                         <br><br>
-
-                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=mon-an"
-                                           class="btn btn-primary">
-
+                                        <button type="button"
+                                                class="btn btn-primary js-sua-mon"
+                                                data-url="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=mon-an&ajax=1">
                                             Chọn
-
-                                        </a>
-
+                                        </button>
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {% endfor %}
-
                         </div>
-
                     </div>
 
-                    <!-- Đồ uống -->
                     <div class="tab-pane fade {% if active_tab == 'do-uong' %}show active{% endif %}"
                          id="do-uong">
-
                         <div class="row">
-
                             {% for mon in ds_do_uong %}
-
-                            <div class="col-md-4 mb-3">
-
-                                <div class="card">
-
+                            <div class="col-6 col-md-4 mb-3">
+                                <div class="card h-100">
                                     <div class="card-body text-center">
-
-                                        <strong>
-
-                                            {{ mon.ten_hang }}
-
-                                        </strong>
-
+                                        <strong>{{ mon.ten_hang }}</strong>
                                         <br>
-
                                         {{ "{:,.0f}".format(mon.gia_ban) }} đ
-
                                         <br><br>
-
-                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=do-uong"
-                                           class="btn btn-primary">
-
+                                        <button type="button"
+                                                class="btn btn-primary js-sua-mon"
+                                                data-url="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=do-uong&ajax=1">
                                             Chọn
-
-                                        </a>
-
+                                        </button>
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {% endfor %}
-
                         </div>
-
                     </div>
 
-                    <!-- Combo -->
                     <div class="tab-pane fade {% if active_tab == 'combo' %}show active{% endif %}"
                          id="combo">
-
                         <div class="row">
-
                             {% for mon in ds_combo %}
-
-                            <div class="col-md-4 mb-3">
-
-                                <div class="card">
-
+                            <div class="col-6 col-md-4 mb-3">
+                                <div class="card h-100">
                                     <div class="card-body text-center">
-
-                                        <strong>
-
-                                            {{ mon.ten_hang }}
-
-                                        </strong>
-
+                                        <strong>{{ mon.ten_hang }}</strong>
                                         <br>
-
                                         {{ "{:,.0f}".format(mon.gia_ban) }} đ
-
                                         <br><br>
-
-                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=combo"
-                                           class="btn btn-primary">
-
+                                        <button type="button"
+                                                class="btn btn-primary js-sua-mon"
+                                                data-url="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=combo&ajax=1">
                                             Chọn
-
-                                        </a>
-
+                                        </button>
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {% endfor %}
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
-    <!-- Chi tiết hóa đơn -->
-    <div class="col-md-5">
-
-        <div class="card">
-
-            <div class="card-header">
-
-                Chi tiết hóa đơn
-
-            </div>
-
+    <div class="col-12 col-lg-5 order-1 order-lg-2">
+        <div class="card sticky-lg-top">
+            <div class="card-header">Chi tiết hóa đơn</div>
             <div class="card-body">
-
-                <table class="table">
-
-                    <tr>
-
-                        <th>Món</th>
-
-                        <th>SL</th>
-
-                        <th>Tiền</th>
-
-                        <th>Thao tác</th>
-
-                    </tr>
-
-                    {% for ct in ds_chi_tiet %}
-
-                    <tr>
-
-                        <td>
-
-                            {{ ct.hang_hoa.ten_hang }}
-
-                        </td>
-
-                        <td>
-
-                            {{ ct.so_luong }}
-
-                        </td>
-
-                        <td>
-
-                            {{ "{:,.0f}".format(ct.thanh_tien) }} đ
-
-                        </td>
-
-                        <td>
-
-                            <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ ct.hang_hoa.id }}?tab={{ active_tab }}"
-                               class="btn btn-success btn-sm">
-
-                                +
-
-                            </a>
-
-                            <a href="/cashier/giam-mon/{{ ct.id }}?tab={{ active_tab }}"
-                               class="btn btn-warning btn-sm">
-
-                                -
-
-                            </a>
-
-                            <a href="/cashier/xoa-mon/{{ ct.id }}?tab={{ active_tab }}"
-                               class="btn btn-danger btn-sm">
-
-                                X
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </table>
+                <div class="table-responsive">
+                    <table class="table" id="bang-chi-tiet">
+                        <thead>
+                            <tr>
+                                <th>Món</th>
+                                <th>SL</th>
+                                <th>Tiền</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ds-chi-tiet">
+                            {% for ct in ds_chi_tiet %}
+                            <tr data-chi-tiet-id="{{ ct.id }}">
+                                <td>{{ ct.hang_hoa.ten_hang }}</td>
+                                <td>{{ ct.so_luong }}</td>
+                                <td>{{ "{:,.0f}".format(ct.thanh_tien) }} đ</td>
+                                <td class="text-nowrap">
+                                    <button type="button"
+                                            class="btn btn-success btn-sm js-sua-mon"
+                                            data-url="/cashier/them-mon/{{ hoa_don.id }}/{{ ct.hang_hoa.id }}?tab={{ active_tab }}&ajax=1">+</button>
+                                    <button type="button"
+                                            class="btn btn-warning btn-sm js-sua-mon"
+                                            data-url="/cashier/giam-mon/{{ ct.id }}?tab={{ active_tab }}&ajax=1">-</button>
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm js-sua-mon"
+                                            data-url="/cashier/xoa-mon/{{ ct.id }}?tab={{ active_tab }}&ajax=1">X</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
                 <hr>
 
-                <h4>
-
+                <h4 id="tong-tien-text">
                     Tổng tiền:
-
-                    {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
-
+                    <span id="tong-tien-so">{{ "{:,.0f}".format(hoa_don.tong_tien) }}</span> đ
                 </h4>
 
                 <br>
@@ -342,104 +192,149 @@
                         class="btn btn-success"
                         data-bs-toggle="modal"
                         data-bs-target="#modalThanhToan">
-
                     Thanh toán
-
                 </button>
 
                 <a href="/cashier/quay-lai/{{ hoa_don.id }}"
                    class="btn btn-secondary">
-
                     Quay lại
-
                 </a>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
-<!-- Modal chọn phương thức thanh toán -->
 <div class="modal fade"
      id="modalThanhToan"
      tabindex="-1"
      aria-labelledby="modalThanhToanLabel"
      aria-hidden="true">
-
     <div class="modal-dialog modal-dialog-centered">
-
         <div class="modal-content">
-
             <div class="modal-header">
-
-                <h5 class="modal-title"
-                    id="modalThanhToanLabel">
-
+                <h5 class="modal-title" id="modalThanhToanLabel">
                     Chọn phương thức thanh toán
-
                 </h5>
-
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="modal"
-                        aria-label="Đóng">
-                </button>
-
+                        aria-label="Đóng"></button>
             </div>
-
             <div class="modal-body text-center">
-
                 <p class="mb-4">
-
                     Tổng tiền:
-
                     <strong>
-
-                        {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
-
+                        <span id="modal-tong-tien">{{ "{:,.0f}".format(hoa_don.tong_tien) }}</span> đ
                     </strong>
-
                 </p>
-
                 <div class="d-grid gap-3">
-
                     <a href="/cashier/thanh-toan/{{ hoa_don.id }}"
                        class="btn btn-success btn-lg">
-
                         Tiền mặt
-
                     </a>
-
                     <a href="/cashier/thanh-toan-chuyen-khoan/{{ hoa_don.id }}"
                        class="btn btn-primary btn-lg">
-
                         Chuyển khoản
-
                     </a>
-
                 </div>
-
             </div>
-
             <div class="modal-footer">
-
                 <button type="button"
                         class="btn btn-secondary"
                         data-bs-dismiss="modal">
-
                     Hủy
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
+
+<script>
+(function () {
+    var root = document.getElementById('cashier-hoa-don');
+    if (!root) return;
+
+    var hoaDonId = root.getAttribute('data-hoa-don-id');
+    var dangXuLy = false;
+
+    function dinhDangTien(n) {
+        return Math.round(Number(n) || 0)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function tabHienTai() {
+        var active = document.querySelector('.nav-tabs .nav-link.active');
+        if (!active) return root.getAttribute('data-active-tab') || 'mon-an';
+        var target = active.getAttribute('data-bs-target') || '';
+        return target.replace('#', '') || 'mon-an';
+    }
+
+    function renderChiTiet(data) {
+        var tbody = document.getElementById('ds-chi-tiet');
+        var tab = tabHienTai();
+        var html = '';
+
+        (data.chi_tiet || []).forEach(function (ct) {
+            html +=
+                '<tr data-chi-tiet-id="' + ct.id + '">' +
+                '<td>' + ct.ten_hang + '</td>' +
+                '<td>' + ct.so_luong + '</td>' +
+                '<td>' + dinhDangTien(ct.thanh_tien) + ' đ</td>' +
+                '<td class="text-nowrap">' +
+                '<button type="button" class="btn btn-success btn-sm js-sua-mon" data-url="/cashier/them-mon/' +
+                hoaDonId + '/' + ct.hang_hoa_id + '?tab=' + tab + '&ajax=1">+</button> ' +
+                '<button type="button" class="btn btn-warning btn-sm js-sua-mon" data-url="/cashier/giam-mon/' +
+                ct.id + '?tab=' + tab + '&ajax=1">-</button> ' +
+                '<button type="button" class="btn btn-danger btn-sm js-sua-mon" data-url="/cashier/xoa-mon/' +
+                ct.id + '?tab=' + tab + '&ajax=1">X</button>' +
+                '</td></tr>';
+        });
+
+        tbody.innerHTML = html;
+
+        var tong = dinhDangTien(data.tong_tien);
+        var tongSo = document.getElementById('tong-tien-so');
+        var modalTong = document.getElementById('modal-tong-tien');
+        if (tongSo) tongSo.textContent = tong;
+        if (modalTong) modalTong.textContent = tong;
+    }
+
+    function goiAjax(url) {
+        if (dangXuLy) return;
+        dangXuLy = true;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+            .then(function (res) {
+                if (!res.ok) throw new Error('Lỗi cập nhật món');
+                return res.json();
+            })
+            .then(function (data) {
+                renderChiTiet(data);
+            })
+            .catch(function () {
+                window.location.href = url.replace(/[?&]ajax=1/, '');
+            })
+            .finally(function () {
+                dangXuLy = false;
+            });
+    }
+
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.js-sua-mon');
+        if (!btn || !root.contains(btn)) return;
+        e.preventDefault();
+        var url = btn.getAttribute('data-url');
+        if (url) goiAjax(url);
+    });
+})();
+</script>
 
 {% endblock %}

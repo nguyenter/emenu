@@ -4,7 +4,22 @@
 
 <h2>Quản lý phòng/bàn</h2>
 
-<div class="mb-3">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show"
+         role="alert">
+        {{ message }}
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Đóng"></button>
+    </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="mb-3 d-flex flex-wrap gap-2">
 
     <a href="/khu-vuc/them"
        class="btn btn-primary">
@@ -18,12 +33,18 @@
         Thêm bàn
     </a>
 
+    <a href="/ban/xoa"
+       class="btn btn-danger">
+
+        Xóa bàn
+    </a>
+
 </div>
 
 
 {% for kv in ds_khu_vuc %}
 
-<div class="card mb-4">
+<div class="card mb-3 mb-md-4">
 
     <div class="card-header">
 
@@ -33,19 +54,17 @@
 
     <div class="card-body">
 
-        <div class="row">
+        <div class="row g-2">
 
             {% for ban in kv.ban %}
 
-            <div class="col-md-2 mb-3">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
 
-                <div class="card text-center">
+                <div class="card text-center h-100">
 
-                    <div class="card-body">
+                    <div class="card-body py-3">
 
-                        <h5>{{ ban.ten_ban }}</h5>
-
-                        <p>{{ ban.so_ghe }} ghế</p>
+                        <h5 class="fs-6">{{ ban.ten_ban }}</h5>
 
                         {% if ban.trang_thai == 'TRONG' %}
 

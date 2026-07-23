@@ -65,11 +65,17 @@
 
         <label>Giá bán</label>
 
-        <input type="number"
+        <input type="text"
                name="gia_ban"
-               class="form-control"
-               value="{{ hang_hoa.gia_ban }}"
+               class="form-control gia-ban-input"
+               inputmode="numeric"
+               placeholder="Ví dụ: 45.000 hoặc 45,000"
+               value="{{ '{:,.0f}'.format(hang_hoa.gia_ban).replace(',', '.') }}"
                required>
+
+        <small class="text-muted">
+            Có thể dùng dấu . hoặc , để tách hàng nghìn (vd: 45.000)
+        </small>
 
     </div>
 

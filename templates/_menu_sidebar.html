@@ -1,0 +1,43 @@
+{% macro menu_quan_ly() %}
+    {% if session.get('vai_tro') in ['ADMIN', 'QUAN_LY'] %}
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/dashboard">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/hang-hoa">Quản lý hàng hóa</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/nhom-hang">Nhóm hàng</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/phong-ban">Quản lý phòng/bàn</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/hoa-don">Quản lý hóa đơn</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/khach-hang">Quản lý khách hàng</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/bao-cao">Báo cáo</a>
+    </li>
+    {% if session.get('vai_tro') == 'QUAN_LY' %}
+    <li class="nav-item mt-2">
+        <a class="nav-link text-warning" href="/cashier">Bán hàng (Thu ngân)</a>
+    </li>
+    {% endif %}
+    {% endif %}
+
+    {% if session.get('vai_tro') == 'ADMIN' %}
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/nguoi-dung">Người dùng</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" href="/chi-nhanh">Chi nhánh</a>
+    </li>
+    {% endif %}
+
+    <li class="nav-item mt-4">
+        <a class="nav-link text-danger" href="/logout">Đăng xuất</a>
+    </li>
+{% endmacro %}

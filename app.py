@@ -8,6 +8,7 @@ from flask import (
     url_for,
     send_file,
     flash,
+    jsonify,
 )
 from functools import wraps
 from config import Config
@@ -26,10 +27,13 @@ from utils.gop_tach_ban import gop_ban, tach_ban
 from utils.hoa_don_pdf import tao_hoa_don_pdf
 from utils.nhap_hang_hoa_excel import (
     nhap_hang_hoa_tu_excel,
+    parse_gia_ban,
     tao_file_mau_excel,
 )
+from utils.xuat_bao_cao_excel import tao_file_bao_cao_doanh_thu
 from utils.xoa_an_toan import (
     dem_admin,
+    xoa_ban_an_toan,
     xoa_chi_nhanh_an_toan,
     xoa_hang_hoa_an_toan,
     xoa_hoa_don_an_toan,
@@ -157,6 +161,8 @@ def login():
 @app.route('/dashboard')
 @manager_required
 def dashboard():
+    from datetime import date
+
     tong_hang_hoa = HangHoa.query.count()
 
     tong_khach_hang = KhachHang.query.count()
@@ -165,13 +171,22 @@ def dashboard():
 
     tong_nhom_hang = NhomHang.query.count()
 
+    hom_nay = date.today()
+    dt_hom_nay = _thong_ke_doanh_thu(hom_nay, hom_nay)
+
     return render_template(
         'dashboard.html',
         ho_ten=session['ho_ten'],
         tong_hang_hoa=tong_hang_hoa,
         tong_khach_hang=tong_khach_hang,
         tong_hoa_don=tong_hoa_don,
-        tong_nhom_hang=tong_nhom_hang
+        tong_nhom_hang=tong_nhom_hang,
+        nhan_ngay=hom_nay.strftime('%d/%m/%Y'),
+        ngay_iso=hom_nay.isoformat(),
+        doanh_thu_hom_nay=dt_hom_nay['tong_doanh_thu'],
+        so_hoa_don_hom_nay=dt_hom_nay['tong_hoa_don'],
+        tien_mat_hom_nay=dt_hom_nay['tien_mat'],
+        chuyen_khoan_hom_nay=dt_hom_nay['chuyen_khoan_qr'],
     )
 
 @app.route('/cashier')
@@ -460,7 +475,7 @@ def them_hang_hoa():
             ten_hang=request.form['ten_hang'],
             nhom_hang_id=request.form['nhom_hang_id'],
             don_vi_tinh=request.form['don_vi_tinh'],
-            gia_ban=request.form['gia_ban'],
+            gia_ban=parse_gia_ban(request.form['gia_ban']),
             loai_thuc_don=request.form['loai_thuc_don'],
             chi_nhanh_id=1
         )
@@ -490,7 +505,7 @@ def sua_hang_hoa(id):
         hang_hoa.ten_hang = request.form['ten_hang']
         hang_hoa.nhom_hang_id = request.form['nhom_hang_id']
         hang_hoa.don_vi_tinh = request.form['don_vi_tinh']
-        hang_hoa.gia_ban = request.form['gia_ban']
+        hang_hoa.gia_ban = parse_gia_ban(request.form['gia_ban'])
         hang_hoa.loai_thuc_don = request.form['loai_thuc_don']
         hang_hoa.trang_thai = (
             request.form.get('trang_thai', '1') == '1'
@@ -606,6 +621,42 @@ def them_ban():
         'them_ban.html',
         ds_khu_vuc=ds_khu_vuc
     )
+
+
+@app.route('/ban/xoa', methods=['GET', 'POST'])
+@manager_required
+def xoa_ban():
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    ds_khu_vuc = KhuVuc.query.order_by(
+        KhuVuc.so_thu_tu
+    ).all()
+
+    if request.method == 'POST':
+        ban_id = request.form.get('ban_id')
+        if not ban_id:
+            flash('Vui lòng chọn bàn cần xóa', 'warning')
+            return redirect(url_for('xoa_ban'))
+
+        ban = Ban.query.get_or_404(int(ban_id))
+        ten_ban = ban.ten_ban
+        ok, loi = xoa_ban_an_toan(ban)
+
+        if not ok:
+            flash(loi, 'danger')
+            return redirect(url_for('xoa_ban'))
+
+        db.session.commit()
+        flash(f'Đã xóa bàn "{ten_ban}"', 'success')
+        return redirect('/phong-ban')
+
+    return render_template(
+        'xoa_ban.html',
+        ds_khu_vuc=ds_khu_vuc
+    )
+
 
 @app.route('/cashier/chon-ban/<int:ban_id>')
 @login_required
@@ -757,6 +808,48 @@ def _tab_tu_loai_thuc_don(loai_thuc_don):
     return mapping.get(loai_thuc_don, 'mon-an')
 
 
+def _la_ajax_request():
+    return (
+        request.args.get('ajax') == '1'
+        or request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    )
+
+
+def _json_hoa_don_chi_tiet(hoa_don_id):
+    hoa_don = HoaDon.query.get_or_404(hoa_don_id)
+    ds = ChiTietHoaDon.query.filter_by(
+        hoa_don_id=hoa_don_id
+    ).all()
+
+    return {
+        'hoa_don_id': hoa_don.id,
+        'tong_tien': float(hoa_don.tong_tien or 0),
+        'chi_tiet': [
+            {
+                'id': ct.id,
+                'hang_hoa_id': ct.hang_hoa_id,
+                'ten_hang': ct.hang_hoa.ten_hang,
+                'so_luong': ct.so_luong,
+                'thanh_tien': float(ct.thanh_tien or 0),
+            }
+            for ct in ds
+        ],
+    }
+
+
+def _phan_hoi_sau_sua_mon(hoa_don_id, tab):
+    if _la_ajax_request():
+        return jsonify(_json_hoa_don_chi_tiet(hoa_don_id))
+
+    return redirect(
+        url_for(
+            'chi_tiet_hoa_don',
+            hoa_don_id=hoa_don_id,
+            tab=tab
+        )
+    )
+
+
 @app.route('/cashier/them-mon/<int:hoa_don_id>/<int:hang_hoa_id>')
 @login_required
 def them_mon(hoa_don_id, hang_hoa_id):
@@ -812,13 +905,8 @@ def them_mon(hoa_don_id, hang_hoa_id):
         _tab_tu_loai_thuc_don(hang_hoa.loai_thuc_don)
     )
 
-    return redirect(
-        url_for(
-            'chi_tiet_hoa_don',
-            hoa_don_id=hoa_don_id,
-            tab=tab
-        )
-    )
+    return _phan_hoi_sau_sua_mon(hoa_don_id, tab)
+
 
 @app.route('/cashier/giam-mon/<int:chi_tiet_id>')
 @login_required
@@ -862,13 +950,8 @@ def giam_mon(chi_tiet_id):
 
     db.session.commit()
 
-    return redirect(
-        url_for(
-            'chi_tiet_hoa_don',
-            hoa_don_id=hoa_don_id,
-            tab=tab
-        )
-    )
+    return _phan_hoi_sau_sua_mon(hoa_don_id, tab)
+
 
 @app.route('/cashier/xoa-mon/<int:chi_tiet_id>')
 @login_required
@@ -903,13 +986,7 @@ def xoa_mon(chi_tiet_id):
 
     db.session.commit()
 
-    return redirect(
-        url_for(
-            'chi_tiet_hoa_don',
-            hoa_don_id=hoa_don_id,
-            tab=tab
-        )
-    )
+    return _phan_hoi_sau_sua_mon(hoa_don_id, tab)
 
 @app.route('/cashier/thanh-toan/<int:hoa_don_id>')
 @login_required
@@ -1376,6 +1453,66 @@ def xoa_hoa_don(id):
 @manager_required
 def bao_cao():
 
+    ky = _lay_ky_bao_cao()
+    thong_ke = _thong_ke_doanh_thu(
+        ky['tu_ngay'],
+        ky['den_ngay']
+    )
+
+    return render_template(
+        'bao_cao.html',
+        ds_hoa_don=thong_ke['ds_hoa_don'],
+        tong_doanh_thu=thong_ke['tong_doanh_thu'],
+        tong_hoa_don=thong_ke['tong_hoa_don'],
+        tien_mat=thong_ke['tien_mat'],
+        chuyen_khoan_qr=thong_ke['chuyen_khoan_qr'],
+        loai=ky['loai'],
+        ngay=ky['ngay'],
+        tuan=ky['tuan'],
+        thang=ky['thang'],
+        nam=ky['nam'],
+        nhan_ky=ky['nhan_ky'],
+        ds_nam=ky['ds_nam'],
+    )
+
+
+@app.route('/bao-cao/xuat-excel')
+@manager_required
+def xuat_bao_cao_excel():
+
+    ky = _lay_ky_bao_cao()
+    thong_ke = _thong_ke_doanh_thu(
+        ky['tu_ngay'],
+        ky['den_ngay']
+    )
+
+    buffer = tao_file_bao_cao_doanh_thu(
+        nhan_ky=ky['nhan_ky'],
+        ds_hoa_don=thong_ke['ds_hoa_don'],
+        tong_doanh_thu=thong_ke['tong_doanh_thu'],
+        tong_hoa_don=thong_ke['tong_hoa_don'],
+        tien_mat=thong_ke['tien_mat'],
+        chuyen_khoan_qr=thong_ke['chuyen_khoan_qr'],
+    )
+
+    ten_file = (
+        f"bao_cao_doanh_thu_{ky['loai']}_"
+        f"{ky['tu_ngay'].strftime('%Y%m%d')}_"
+        f"{ky['den_ngay'].strftime('%Y%m%d')}.xlsx"
+    )
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=ten_file,
+        mimetype=(
+            'application/vnd.openxmlformats-'
+            'officedocument.spreadsheetml.sheet'
+        ),
+    )
+
+
+def _lay_ky_bao_cao():
     from datetime import date
     from calendar import monthrange
 
@@ -1397,7 +1534,6 @@ def bao_cao():
             nhan_ky = f'Ngày {d.strftime("%d/%m/%Y")}'
 
         elif loai == 'tuan':
-
             year_str, week_str = tuan.split('-W')
             year_i, week_i = int(year_str), int(week_str)
             tu_ngay = date.fromisocalendar(year_i, week_i, 1)
@@ -1430,6 +1566,20 @@ def bao_cao():
         ngay = today.isoformat()
         nhan_ky = f'Ngày {today.strftime("%d/%m/%Y")}'
 
+    return {
+        'loai': loai,
+        'ngay': ngay,
+        'tuan': tuan,
+        'thang': thang,
+        'nam': str(nam),
+        'tu_ngay': tu_ngay,
+        'den_ngay': den_ngay,
+        'nhan_ky': nhan_ky,
+        'ds_nam': list(range(today.year, today.year - 6, -1)),
+    }
+
+
+def _thong_ke_doanh_thu(tu_ngay, den_ngay):
     query = HoaDon.query.filter(
         HoaDon.trang_thai == 'DA_THANH_TOAN',
         db.func.date(HoaDon.created_at) >= tu_ngay.isoformat(),
@@ -1443,8 +1593,6 @@ def bao_cao():
         for hd in ds_hoa_don
     )
 
-    tong_hoa_don = len(ds_hoa_don)
-
     tien_mat = sum(
         hd.tong_tien or 0
         for hd in ds_hoa_don
@@ -1457,23 +1605,14 @@ def bao_cao():
         if hd.phuong_thuc_thanh_toan in ('CHUYEN_KHOAN', 'QR')
     )
 
-    ds_nam = list(range(today.year, today.year - 6, -1))
+    return {
+        'ds_hoa_don': ds_hoa_don,
+        'tong_doanh_thu': float(tong_doanh_thu or 0),
+        'tong_hoa_don': len(ds_hoa_don),
+        'tien_mat': float(tien_mat or 0),
+        'chuyen_khoan_qr': float(chuyen_khoan_qr or 0),
+    }
 
-    return render_template(
-        'bao_cao.html',
-        ds_hoa_don=ds_hoa_don,
-        tong_doanh_thu=float(tong_doanh_thu or 0),
-        tong_hoa_don=tong_hoa_don,
-        tien_mat=float(tien_mat or 0),
-        chuyen_khoan_qr=float(chuyen_khoan_qr or 0),
-        loai=loai,
-        ngay=ngay,
-        tuan=tuan,
-        thang=thang,
-        nam=str(nam),
-        nhan_ky=nhan_ky,
-        ds_nam=ds_nam,
-    )
 
 @app.route('/chi-nhanh')
 @admin_required

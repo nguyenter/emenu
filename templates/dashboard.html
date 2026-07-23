@@ -10,40 +10,169 @@ Dashboard
 
 <p>Xin chào {{ ho_ten }}</p>
 
-<div class="row">
+<div class="row g-3 mb-4">
 
-    <div class="col-md-3">
-
-        <div class="card">
-
+    <div class="col-6 col-md-3">
+        <div class="card h-100">
             <div class="card-body">
-
-                <h5>Hàng hóa</h5>
-
-                <h2>{{ tong_hang_hoa }}</h2>
-
+                <h5 class="fs-6">Hàng hóa</h5>
+                <h2 class="fs-3 mb-0">{{ tong_hang_hoa }}</h2>
             </div>
-
         </div>
-
     </div>
 
-    <div class="col-md-3">
-
-        <div class="card">
-
+    <div class="col-6 col-md-3">
+        <div class="card h-100">
             <div class="card-body">
-
-                <h5>Khách hàng</h5>
-
-                <h2>{{ tong_khach_hang }}</h2>
-
+                <h5 class="fs-6">Khách hàng</h5>
+                <h2 class="fs-3 mb-0">{{ tong_khach_hang }}</h2>
             </div>
-
         </div>
+    </div>
 
+    <div class="col-6 col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="fs-6">Hóa đơn</h5>
+                <h2 class="fs-3 mb-0">{{ tong_hoa_don }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="fs-6">Nhóm hàng</h5>
+                <h2 class="fs-3 mb-0">{{ tong_nhom_hang }}</h2>
+            </div>
+        </div>
     </div>
 
 </div>
+
+<hr>
+
+<h3 class="fs-5 mb-3">
+    Doanh thu hôm nay
+    <small class="text-muted">({{ nhan_ngay }})</small>
+</h3>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-12 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Biểu đồ tỷ lệ phương thức thanh toán hôm nay
+            </div>
+            <div class="card-body">
+                <div style="max-width: 280px; margin: 0 auto;">
+                    <canvas id="bieuDoDoanhThuHomNay"></canvas>
+                </div>
+                {% if doanh_thu_hom_nay == 0 %}
+                <p class="text-center text-muted mt-3 mb-0">
+                    Chưa có doanh thu trong ngày hôm nay
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Tỷ lệ doanh thu hôm nay
+            </div>
+            <div class="card-body">
+                {% set ty_le_tien_mat = (tien_mat_hom_nay / doanh_thu_hom_nay * 100) if doanh_thu_hom_nay else 0 %}
+                {% set ty_le_ck = (chuyen_khoan_hom_nay / doanh_thu_hom_nay * 100) if doanh_thu_hom_nay else 0 %}
+
+                <p>
+                    <strong>Tổng doanh thu:</strong>
+                    {{ "{:,.0f}".format(doanh_thu_hom_nay) }} đ
+                </p>
+                <p>
+                    <strong>Số hóa đơn:</strong>
+                    {{ so_hoa_don_hom_nay }}
+                </p>
+                <p>
+                    <strong>Tiền mặt:</strong>
+                    {{ "{:,.0f}".format(tien_mat_hom_nay) }} đ
+                    ({{ "{:.1f}".format(ty_le_tien_mat) }}%)
+                </p>
+                <p class="mb-0">
+                    <strong>Chuyển khoản / QR:</strong>
+                    {{ "{:,.0f}".format(chuyen_khoan_hom_nay) }} đ
+                    ({{ "{:.1f}".format(ty_le_ck) }}%)
+                </p>
+
+                <hr>
+
+                <a href="/bao-cao?loai=ngay&ngay={{ ngay_iso }}"
+                   class="btn btn-outline-primary btn-sm">
+                    Xem báo cáo chi tiết
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    const tienMat = {{ tien_mat_hom_nay }};
+    const chuyenKhoanQr = {{ chuyen_khoan_hom_nay }};
+    const ctx = document.getElementById('bieuDoDoanhThuHomNay');
+
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Tiền mặt', 'Chuyển khoản / QR'],
+            datasets: [{
+                data: [tienMat, chuyenKhoanQr],
+                backgroundColor: [
+                    '#198754',
+                    '#0d6efd'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 1,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce(
+                                (a, b) => a + b,
+                                0
+                            );
+                            const percent = total
+                                ? ((value / total) * 100).toFixed(1)
+                                : 0;
+                            return (
+                                context.label +
+                                ': ' +
+                                Number(value).toLocaleString('vi-VN') +
+                                ' đ (' +
+                                percent +
+                                '%)'
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    });
+})();
+</script>
 
 {% endblock %}
