@@ -22,10 +22,13 @@ Repository: https://github.com/nguyenter/emenu
 ### Thu ngân (Cashier)
 - Chọn bàn, gọi món (giữ tab Món ăn / Đồ uống / Combo)
 - Thêm khách hàng theo số điện thoại (nhận diện khách cũ/mới)
-- Thanh toán **Tiền mặt** hoặc **Chuyển khoản** (chỗ gắn PayOS)
+- Thanh toán **Tiền mặt** hoặc **Chuyển khoản** (PayOS: QR / link thanh toán)
 - Xuất hóa đơn PDF sau thanh toán
 - **Gộp bàn** / **Tách bàn**
 
+### Cấu hình PayOS (ADMIN)
+- Menu **Cấu hình PayOS**: nhập Client ID, API Key, Checksum Key
+- Khi thu ngân chọn **Chuyển khoản**, hệ thống tạo QR / link PayOS
 ## Công nghệ
 
 - Python 3.11+
@@ -63,17 +66,24 @@ DB_PORT=3306
 DB_NAME=emenu
 DB_USER=root
 DB_PASSWORD=your_password_here
+PAYOS_CLIENT_ID=
+PAYOS_API_KEY=
+PAYOS_CHECKSUM_KEY=
 ```
+
+> PayOS cũng có thể cấu hình trên giao diện ADMIN → **Cấu hình PayOS** (ưu tiên hơn `.env`).
 
 ### Migration (nếu cần)
 
 ```bash
 python scripts/migrate_admin_role.py
 python scripts/migrate_ban_gop.py
+python scripts/migrate_cau_hinh.py
 ```
 
 - `migrate_admin_role.py`: thêm enum `ADMIN` + tạo tài khoản admin mẫu (nếu chưa có)
 - `migrate_ban_gop.py`: thêm cột `ban_gop` cho tính năng gộp bàn
+- `migrate_cau_hinh.py`: bảng lưu cấu hình PayOS
 
 ## Chạy ứng dụng
 

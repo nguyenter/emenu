@@ -31,6 +31,16 @@ from utils.nhap_hang_hoa_excel import (
     tao_file_mau_excel,
 )
 from utils.xuat_bao_cao_excel import tao_file_bao_cao_doanh_thu
+from utils.payos_service import (
+    da_cau_hinh_payos,
+    kiem_tra_thanh_toan_payos,
+    lay_cau_hinh_payos,
+    luu_cau_hinh,
+    tao_link_thanh_toan_payos,
+    PAYOS_API_KEY,
+    PAYOS_CHECKSUM_KEY,
+    PAYOS_CLIENT_ID,
+)
 from utils.xoa_an_toan import (
     dem_admin,
     xoa_ban_an_toan,
@@ -1034,10 +1044,40 @@ def thanh_toan_chuyen_khoan(hoa_don_id):
         hoa_don_id=hoa_don_id
     ).all()
 
+    payos_info = None
+    payos_error = None
+
+    if not da_cau_hinh_payos():
+        payos_error = (
+            'Chưa cấu hình PayOS. '
+            'Vào mục Cấu hình PayOS (ADMIN) để nhập '
+            'Client ID, API Key, Checksum Key.'
+        )
+    else:
+        base = request.url_root.rstrip('/')
+        ok, ket_qua = tao_link_thanh_toan_payos(
+            hoa_don=hoa_don,
+            return_url=(
+                f'{base}/cashier/payos/return/{hoa_don_id}'
+            ),
+            cancel_url=(
+                f'{base}/cashier/payos/cancel/{hoa_don_id}'
+            ),
+        )
+        if ok:
+            payos_info = ket_qua
+            session[f'payos_order_{hoa_don_id}'] = ket_qua.get(
+                'order_code'
+            )
+        else:
+            payos_error = ket_qua
+
     return render_template(
         'thanh_toan_chuyen_khoan.html',
         hoa_don=hoa_don,
-        ds_chi_tiet=ds_chi_tiet
+        ds_chi_tiet=ds_chi_tiet,
+        payos_info=payos_info,
+        payos_error=payos_error,
     )
 
 
@@ -1055,7 +1095,6 @@ def xac_nhan_chuyen_khoan(hoa_don_id):
     if hoa_don.trang_thai != 'DANG_PHUC_VU':
         return redirect(url_for('cashier'))
 
-
     hoa_don.trang_thai = 'DA_THANH_TOAN'
     hoa_don.phuong_thuc_thanh_toan = 'CHUYEN_KHOAN'
 
@@ -1063,15 +1102,111 @@ def xac_nhan_chuyen_khoan(hoa_don_id):
         hoa_don.ban_id
     )
 
-    ban.trang_thai = 'TRONG'
+    if ban:
+        ban.trang_thai = 'TRONG'
 
     db.session.commit()
+    session.pop(f'payos_order_{hoa_don_id}', None)
 
     return redirect(
         url_for(
             'thanh_toan_thanh_cong',
             hoa_don_id=hoa_don_id
         )
+    )
+
+
+@app.route('/cashier/payos/return/<int:hoa_don_id>')
+@login_required
+def payos_return(hoa_don_id):
+
+    hoa_don = HoaDon.query.get_or_404(hoa_don_id)
+
+    if hoa_don.trang_thai == 'DA_THANH_TOAN':
+        return redirect(
+            url_for(
+                'thanh_toan_thanh_cong',
+                hoa_don_id=hoa_don_id
+            )
+        )
+
+    if hoa_don.trang_thai != 'DANG_PHUC_VU':
+        return redirect(url_for('cashier'))
+
+    order_code = (
+        request.args.get('orderCode')
+        or session.get(f'payos_order_{hoa_don_id}')
+    )
+
+    if order_code and kiem_tra_thanh_toan_payos(order_code):
+        hoa_don.trang_thai = 'DA_THANH_TOAN'
+        hoa_don.phuong_thuc_thanh_toan = 'CHUYEN_KHOAN'
+        ban = Ban.query.get(hoa_don.ban_id)
+        if ban:
+            ban.trang_thai = 'TRONG'
+        db.session.commit()
+        session.pop(f'payos_order_{hoa_don_id}', None)
+        return redirect(
+            url_for(
+                'thanh_toan_thanh_cong',
+                hoa_don_id=hoa_don_id
+            )
+        )
+
+    flash(
+        'Chưa xác nhận được thanh toán PayOS. '
+        'Nếu khách đã chuyển khoản, bấm Xác nhận đã chuyển khoản.',
+        'warning'
+    )
+    return redirect(
+        url_for(
+            'thanh_toan_chuyen_khoan',
+            hoa_don_id=hoa_don_id
+        )
+    )
+
+
+@app.route('/cashier/payos/cancel/<int:hoa_don_id>')
+@login_required
+def payos_cancel(hoa_don_id):
+
+    flash('Đã hủy thanh toán PayOS.', 'info')
+    return redirect(
+        url_for(
+            'chi_tiet_hoa_don',
+            hoa_don_id=hoa_don_id
+        )
+    )
+
+
+@app.route('/cau-hinh/payos', methods=['GET', 'POST'])
+@admin_required
+def cau_hinh_payos():
+
+    if request.method == 'POST':
+        client_id = (request.form.get('client_id') or '').strip()
+        api_key = (request.form.get('api_key') or '').strip()
+        checksum_key = (
+            request.form.get('checksum_key') or ''
+        ).strip()
+
+        if not client_id or not api_key or not checksum_key:
+            flash('Vui lòng nhập đủ 3 khóa PayOS.', 'warning')
+            return redirect(url_for('cau_hinh_payos'))
+
+        luu_cau_hinh(PAYOS_CLIENT_ID, client_id)
+        luu_cau_hinh(PAYOS_API_KEY, api_key)
+        luu_cau_hinh(PAYOS_CHECKSUM_KEY, checksum_key)
+
+        flash('Đã lưu cấu hình PayOS.', 'success')
+        return redirect(url_for('cau_hinh_payos'))
+
+    cfg = lay_cau_hinh_payos()
+    return render_template(
+        'cau_hinh_payos.html',
+        client_id=cfg['client_id'],
+        api_key=cfg['api_key'],
+        checksum_key=cfg['checksum_key'],
     )
 
 

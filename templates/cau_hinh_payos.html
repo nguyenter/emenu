@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Cấu hình PayOS
+{% endblock %}
+
+{% block content %}
+
+<h2>Cấu hình PayOS</h2>
+
+<p class="text-muted">
+    Nhập khóa từ trang quản trị PayOS
+    (<a href="https://my.payos.vn" target="_blank" rel="noopener">my.payos.vn</a>)
+    để dùng khi thanh toán chuyển khoản.
+</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show"
+         role="alert">
+        {{ message }}
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Đóng"></button>
+    </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<form method="POST" class="card">
+    <div class="card-body">
+
+        <div class="mb-3">
+            <label class="form-label">Client ID</label>
+            <input type="password"
+                   name="client_id"
+                   class="form-control font-monospace"
+                   value="{{ client_id }}"
+                   placeholder="••••••••••••"
+                   autocomplete="new-password"
+                   spellcheck="false"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">API Key</label>
+            <input type="password"
+                   name="api_key"
+                   class="form-control font-monospace"
+                   value="{{ api_key }}"
+                   placeholder="••••••••••••"
+                   autocomplete="new-password"
+                   spellcheck="false"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Checksum Key</label>
+            <input type="password"
+                   name="checksum_key"
+                   class="form-control font-monospace"
+                   value="{{ checksum_key }}"
+                   placeholder="••••••••••••"
+                   autocomplete="new-password"
+                   spellcheck="false"
+                   required>
+        </div>
+
+        <p class="small text-muted mb-3">
+            Các khóa được lưu trong hệ thống (bảng cấu hình).
+            Có thể ghi đè bằng biến môi trường
+            <code>PAYOS_CLIENT_ID</code>,
+            <code>PAYOS_API_KEY</code>,
+            <code>PAYOS_CHECKSUM_KEY</code>
+            nếu chưa nhập tại đây.
+        </p>
+
+        <button type="submit" class="btn btn-primary">
+            Lưu cấu hình
+        </button>
+
+        <a href="/dashboard" class="btn btn-secondary">
+            Quay lại
+        </a>
+
+    </div>
+</form>
+
+{% endblock %}
