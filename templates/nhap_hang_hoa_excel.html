@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Nhập hàng hóa bằng Excel</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        <h5>Định dạng file</h5>
+
+        <p class="mb-2">
+            File <strong>.xlsx</strong> với dòng đầu là tiêu đề cột:
+        </p>
+
+        <ul>
+            <li><strong>Mã hàng</strong> (bắt buộc)</li>
+            <li><strong>Tên hàng</strong> (bắt buộc)</li>
+            <li><strong>Nhóm hàng</strong> (tên nhóm hoặc mã nhóm đã có trên hệ thống)</li>
+            <li><strong>Đơn vị tính</strong></li>
+            <li><strong>Giá bán</strong> (bắt buộc)</li>
+            <li>
+                <strong>Loại thực đơn</strong> (bắt buộc):
+                <code>MON_AN</code> / <code>DO_UONG</code> / <code>COMBO</code>
+                hoặc Món ăn / Đồ uống / Combo
+            </li>
+        </ul>
+
+        <p class="text-muted mb-0">
+            Nếu mã hàng đã tồn tại, hệ thống sẽ cập nhật thông tin hàng đó.
+        </p>
+
+        <a href="/hang-hoa/mau-excel"
+           class="btn btn-outline-secondary mt-3">
+            Tải file mẫu
+        </a>
+
+    </div>
+
+</div>
+
+<form method="POST"
+      enctype="multipart/form-data"
+      class="card">
+
+    <div class="card-body">
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Chọn file Excel
+            </label>
+
+            <input type="file"
+                   name="file_excel"
+                   class="form-control"
+                   accept=".xlsx,.xlsm"
+                   required>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Nhập dữ liệu
+        </button>
+
+        <a href="/hang-hoa"
+           class="btn btn-secondary">
+            Quay lại
+        </a>
+
+    </div>
+
+</form>
+
+{% endblock %}

@@ -2,45 +2,172 @@
 
 {% block content %}
 
-<h2>Thêm khách hàng</h2>
+<h2>Thêm khách hàng vào hóa đơn</h2>
+
+<p class="text-muted">
+    Hóa đơn:
+    <strong>{{ hoa_don.ma_hoa_don }}</strong>
+</p>
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if not buoc or buoc == 'nhap_sdt' %}
 
 <form method="POST">
 
-    <div class="mb-3">
-
-        <label>Tên khách hàng</label>
-
-        <input type="text"
-               name="ten_khach_hang"
-               class="form-control"
-               required>
-
-    </div>
+    <input type="hidden"
+           name="buoc"
+           value="kiem_tra">
 
     <div class="mb-3">
 
-        <label>Số điện thoại</label>
+        <label class="form-label">
+            Số điện thoại
+        </label>
 
         <input type="text"
                name="dien_thoai"
-               class="form-control">
+               class="form-control"
+               placeholder="Nhập số điện thoại khách"
+               value="{{ dien_thoai or '' }}"
+               required
+               autofocus>
 
     </div>
 
     <button type="submit"
             class="btn btn-primary">
-
-        Lưu
-
+        Tiếp tục
     </button>
 
-    <a href="/cashier/chon-ban/{{ hoa_don.ban_id }}"
+    <a href="/cashier/hoa-don/{{ hoa_don.id }}"
        class="btn btn-secondary">
-
         Hủy
-
     </a>
 
 </form>
+
+{% elif buoc == 'khach_cu' %}
+
+<div class="alert alert-success">
+    Đã tìm thấy khách hàng cũ trong hệ thống.
+</div>
+
+<form method="POST">
+
+    <input type="hidden"
+           name="buoc"
+           value="luu">
+
+    <input type="hidden"
+           name="dien_thoai"
+           value="{{ khach_hang.dien_thoai }}">
+
+    <div class="mb-3">
+
+        <label class="form-label">Số điện thoại</label>
+
+        <input type="text"
+               class="form-control"
+               value="{{ khach_hang.dien_thoai }}"
+               readonly>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Mã khách hàng</label>
+
+        <input type="text"
+               class="form-control"
+               value="{{ khach_hang.ma_khach_hang }}"
+               readonly>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Tên khách hàng</label>
+
+        <input type="text"
+               class="form-control"
+               value="{{ khach_hang.ten_khach_hang }}"
+               readonly>
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-success">
+        Xác nhận dùng khách hàng này
+    </button>
+
+    <a href="/cashier/them-khach-hang/{{ hoa_don.id }}"
+       class="btn btn-secondary">
+        Nhập số khác
+    </a>
+
+</form>
+
+{% elif buoc == 'khach_moi' %}
+
+<div class="alert alert-info">
+    Số điện thoại chưa có trong hệ thống. Vui lòng nhập tên khách hàng mới.
+</div>
+
+<form method="POST">
+
+    <input type="hidden"
+           name="buoc"
+           value="luu">
+
+    <input type="hidden"
+           name="dien_thoai"
+           value="{{ dien_thoai }}">
+
+    <div class="mb-3">
+
+        <label class="form-label">Số điện thoại</label>
+
+        <input type="text"
+               class="form-control"
+               value="{{ dien_thoai }}"
+               readonly>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Tên khách hàng</label>
+
+        <input type="text"
+               name="ten_khach_hang"
+               class="form-control"
+               placeholder="Nhập tên khách hàng"
+               required
+               autofocus>
+
+    </div>
+
+    <p class="text-muted">
+        Mã khách hàng sẽ được hệ thống tự tạo và dùng chung với quản lý khách hàng.
+    </p>
+
+    <button type="submit"
+            class="btn btn-success">
+        Lưu khách hàng
+    </button>
+
+    <a href="/cashier/them-khach-hang/{{ hoa_don.id }}"
+       class="btn btn-secondary">
+        Nhập số khác
+    </a>
+
+</form>
+
+{% endif %}
 
 {% endblock %}

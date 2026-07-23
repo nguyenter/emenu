@@ -4,11 +4,34 @@
 
 <h2>Quản lý hàng hóa</h2>
 
-<a href="/hang-hoa/them"
-   class="btn btn-success mb-3">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
-    Thêm hàng hóa
-</a>
+<div class="mb-3">
+
+    <a href="/hang-hoa/them"
+       class="btn btn-success">
+        Thêm hàng hóa
+    </a>
+
+    <a href="/hang-hoa/nhap-excel"
+       class="btn btn-primary">
+        Nhập bằng Excel
+    </a>
+
+    <a href="/hang-hoa/mau-excel"
+       class="btn btn-outline-secondary">
+        Tải file mẫu
+    </a>
+
+</div>
 
 <table class="table table-bordered">
 
@@ -16,6 +39,9 @@
         <th>Mã</th>
         <th>Tên hàng</th>
         <th>Giá bán</th>
+        <th>Loại</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
     </tr>
 
     {% for hh in ds_hang_hoa %}
@@ -26,7 +52,32 @@
 
         <td>{{ hh.ten_hang }}</td>
 
-        <td>{{ hh.gia_ban }}</td>
+        <td>{{ "{:,.0f}".format(hh.gia_ban) }} đ</td>
+
+        <td>{{ hh.loai_thuc_don }}</td>
+
+        <td>
+            {% if hh.trang_thai %}
+                Đang bán
+            {% else %}
+                Ngừng bán
+            {% endif %}
+        </td>
+
+        <td>
+
+            <a href="/hang-hoa/sua/{{ hh.id }}"
+               class="btn btn-warning btn-sm">
+                Sửa
+            </a>
+
+            <a href="/hang-hoa/xoa/{{ hh.id }}"
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa hàng hóa này? Hành động không thể hoàn tác.');">
+                Xóa
+            </a>
+
+        </td>
 
     </tr>
 

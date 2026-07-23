@@ -35,7 +35,7 @@
 
         <div class="row">
 
-            {% for ban in kv.danh_sach_ban %}
+            {% for ban in kv.ban %}
 
             <div class="col-md-2 mb-3">
 
@@ -78,6 +78,12 @@
                 </div>
 
             </div>
+
+            {% else %}
+
+            <p class="text-muted mb-0">
+                Chưa có bàn trong khu vực này
+            </p>
 
             {% endfor %}
 

@@ -4,47 +4,166 @@
 
 <h2>Báo cáo doanh thu</h2>
 
-<form method="GET">
+<p class="text-muted mb-3">
+    Kỳ báo cáo:
+    <strong>{{ nhan_ky }}</strong>
+</p>
 
-    <div class="row mb-3">
+<form method="GET"
+      id="formBaoCao"
+      class="card mb-4">
 
-        <div class="col-md-3">
+    <div class="card-body">
 
-            <label>Từ ngày</label>
+        <div class="btn-group mb-3"
+             role="group">
 
-            <input type="date"
-                   name="tu_ngay"
-                   class="form-control"
-                   value="{{ request.args.get('tu_ngay','') }}">
+            <input type="radio"
+                   class="btn-check"
+                   name="loai"
+                   id="loaiNgay"
+                   value="ngay"
+                   {% if loai == 'ngay' %}checked{% endif %}
+                   onchange="doiLoaiBaoCao()">
+
+            <label class="btn btn-outline-primary"
+                   for="loaiNgay">
+                Theo ngày
+            </label>
+
+            <input type="radio"
+                   class="btn-check"
+                   name="loai"
+                   id="loaiTuan"
+                   value="tuan"
+                   {% if loai == 'tuan' %}checked{% endif %}
+                   onchange="doiLoaiBaoCao()">
+
+            <label class="btn btn-outline-primary"
+                   for="loaiTuan">
+                Theo tuần
+            </label>
+
+            <input type="radio"
+                   class="btn-check"
+                   name="loai"
+                   id="loaiThang"
+                   value="thang"
+                   {% if loai == 'thang' %}checked{% endif %}
+                   onchange="doiLoaiBaoCao()">
+
+            <label class="btn btn-outline-primary"
+                   for="loaiThang">
+                Theo tháng
+            </label>
+
+            <input type="radio"
+                   class="btn-check"
+                   name="loai"
+                   id="loaiNam"
+                   value="nam"
+                   {% if loai == 'nam' %}checked{% endif %}
+                   onchange="doiLoaiBaoCao()">
+
+            <label class="btn btn-outline-primary"
+                   for="loaiNam">
+                Theo năm
+            </label>
 
         </div>
 
-        <div class="col-md-3">
+        <div class="row align-items-end">
 
-            <label>Đến ngày</label>
+            <div class="col-md-4 mb-2"
+                 id="boxNgay"
+                 {% if loai != 'ngay' %}style="display:none"{% endif %}>
 
-            <input type="date"
-                   name="den_ngay"
-                   class="form-control"
-                   value="{{ request.args.get('den_ngay','') }}">
+                <label class="form-label">Chọn ngày</label>
 
-        </div>
+                <input type="date"
+                       name="ngay"
+                       class="form-control"
+                       value="{{ ngay }}"
+                       onchange="this.form.submit()">
 
-        <div class="col-md-2">
+            </div>
 
-            <label>&nbsp;</label>
+            <div class="col-md-4 mb-2"
+                 id="boxTuan"
+                 {% if loai != 'tuan' %}style="display:none"{% endif %}>
 
-            <button class="btn btn-primary w-100">
+                <label class="form-label">Chọn tuần</label>
 
-                Xem báo cáo
+                <input type="week"
+                       name="tuan"
+                       class="form-control"
+                       value="{{ tuan }}"
+                       onchange="this.form.submit()">
 
-            </button>
+            </div>
+
+            <div class="col-md-4 mb-2"
+                 id="boxThang"
+                 {% if loai != 'thang' %}style="display:none"{% endif %}>
+
+                <label class="form-label">Chọn tháng</label>
+
+                <input type="month"
+                       name="thang"
+                       class="form-control"
+                       value="{{ thang }}"
+                       onchange="this.form.submit()">
+
+            </div>
+
+            <div class="col-md-4 mb-2"
+                 id="boxNam"
+                 {% if loai != 'nam' %}style="display:none"{% endif %}>
+
+                <label class="form-label">Chọn năm</label>
+
+                <select name="nam"
+                        class="form-select"
+                        onchange="this.form.submit()">
+
+                    {% for y in ds_nam %}
+
+                    <option value="{{ y }}"
+                            {% if nam == y|string %}selected{% endif %}>
+                        {{ y }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3 mb-2">
+
+                <button type="submit"
+                        class="btn btn-primary w-100">
+                    Xem báo cáo
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
 </form>
+
+<script>
+function doiLoaiBaoCao() {
+    const loai = document.querySelector('input[name="loai"]:checked').value;
+    document.getElementById('boxNgay').style.display = loai === 'ngay' ? '' : 'none';
+    document.getElementById('boxTuan').style.display = loai === 'tuan' ? '' : 'none';
+    document.getElementById('boxThang').style.display = loai === 'thang' ? '' : 'none';
+    document.getElementById('boxNam').style.display = loai === 'nam' ? '' : 'none';
+    document.getElementById('formBaoCao').submit();
+}
+</script>
 
 <div class="row mb-4">
 
@@ -88,7 +207,7 @@
 
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-3">
 
         <div class="card">
 
@@ -96,7 +215,11 @@
 
                 <h6>Tiền mặt</h6>
 
-                {{ "{:,.0f}".format(tien_mat) }}
+                <h4 class="mb-0">
+
+                    {{ "{:,.0f}".format(tien_mat) }} đ
+
+                </h4>
 
             </div>
 
@@ -104,15 +227,19 @@
 
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-3">
 
         <div class="card">
 
             <div class="card-body">
 
-                <h6>Chuyển khoản</h6>
+                <h6>Chuyển khoản / QR</h6>
 
-                {{ "{:,.0f}".format(chuyen_khoan) }}
+                <h4 class="mb-0">
+
+                    {{ "{:,.0f}".format(chuyen_khoan_qr) }} đ
+
+                </h4>
 
             </div>
 
@@ -120,15 +247,78 @@
 
     </div>
 
-    <div class="col-md-2">
+</div>
+
+<div class="row mb-4">
+
+    <div class="col-md-6">
 
         <div class="card">
 
+            <div class="card-header">
+
+                Biểu đồ tỷ lệ phương thức thanh toán
+
+            </div>
+
             <div class="card-body">
 
-                <h6>QR</h6>
+                <div style="max-width: 360px; margin: 0 auto;">
 
-                {{ "{:,.0f}".format(qr) }}
+                    <canvas id="bieuDoDoanhThu"></canvas>
+
+                </div>
+
+                {% if tong_doanh_thu == 0 %}
+
+                <p class="text-center text-muted mt-3 mb-0">
+
+                    Chưa có dữ liệu doanh thu trong khoảng thời gian này
+
+                </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                Tỷ lệ doanh thu
+
+            </div>
+
+            <div class="card-body">
+
+                {% set ty_le_tien_mat = (tien_mat / tong_doanh_thu * 100) if tong_doanh_thu else 0 %}
+                {% set ty_le_ck = (chuyen_khoan_qr / tong_doanh_thu * 100) if tong_doanh_thu else 0 %}
+
+                <p>
+
+                    <strong>Tiền mặt:</strong>
+
+                    {{ "{:,.0f}".format(tien_mat) }} đ
+
+                    ({{ "{:.1f}".format(ty_le_tien_mat) }}%)
+
+                </p>
+
+                <p class="mb-0">
+
+                    <strong>Chuyển khoản / QR:</strong>
+
+                    {{ "{:,.0f}".format(chuyen_khoan_qr) }} đ
+
+                    ({{ "{:.1f}".format(ty_le_ck) }}%)
+
+                </p>
 
             </div>
 
@@ -174,7 +364,13 @@
 
             <td>
 
-                {{ hd.phuong_thuc_thanh_toan }}
+                {% if hd.phuong_thuc_thanh_toan == 'TIEN_MAT' %}
+                    Tiền mặt
+                {% elif hd.phuong_thuc_thanh_toan in ['CHUYEN_KHOAN', 'QR'] %}
+                    Chuyển khoản / QR
+                {% else %}
+                    {{ hd.phuong_thuc_thanh_toan or '—' }}
+                {% endif %}
 
             </td>
 
@@ -185,5 +381,62 @@
     </tbody>
 
 </table>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+(function () {
+    const tienMat = {{ tien_mat }};
+    const chuyenKhoanQr = {{ chuyen_khoan_qr }};
+    const ctx = document.getElementById('bieuDoDoanhThu');
+
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Tiền mặt', 'Chuyển khoản / QR'],
+            datasets: [{
+                data: [tienMat, chuyenKhoanQr],
+                backgroundColor: [
+                    '#198754',
+                    '#0d6efd'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce(
+                                (a, b) => a + b,
+                                0
+                            );
+                            const percent = total
+                                ? ((value / total) * 100).toFixed(1)
+                                : 0;
+                            return (
+                                context.label +
+                                ': ' +
+                                Number(value).toLocaleString('vi-VN') +
+                                ' đ (' +
+                                percent +
+                                '%)'
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    });
+})();
+</script>
 
 {% endblock %}

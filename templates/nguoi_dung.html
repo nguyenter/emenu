@@ -64,13 +64,17 @@
 
                 </a>
 
+                {% if nd.vai_tro != 'ADMIN' %}
+
                 <a href="/nguoi-dung/xoa/{{ nd.id }}"
                    class="btn btn-danger btn-sm"
-                   onclick="return confirm('Xóa người dùng?')">
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này? Hành động không thể hoàn tác.');">
 
                     Xóa
 
                 </a>
+
+                {% endif %}
 
             </td>
 

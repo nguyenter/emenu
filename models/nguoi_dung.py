@@ -16,7 +16,8 @@ class NguoiDung(db.Model):
     ho_ten = db.Column(db.String(100),
                        nullable=False)
 
-    vai_tro = db.Column(db.Enum('QUAN_LY',
+    vai_tro = db.Column(db.Enum('ADMIN',
+                                'QUAN_LY',
                                 'NHAN_VIEN'),
                         nullable=False)
 

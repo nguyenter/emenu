@@ -4,6 +4,12 @@
 
 <h2>Thêm người dùng</h2>
 
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
 <form method="POST">
 
     <div class="mb-3">
@@ -47,18 +53,18 @@
                 class="form-control">
 
             <option value="QUAN_LY">
-
                 Quản lý
-
             </option>
 
             <option value="NHAN_VIEN">
-
                 Nhân viên
-
             </option>
 
         </select>
+
+        <small class="text-muted">
+            Hệ thống chỉ có 1 tài khoản ADMIN (đã tồn tại).
+        </small>
 
     </div>
 
@@ -88,6 +94,11 @@
         Lưu
 
     </button>
+
+    <a href="/nguoi-dung"
+       class="btn btn-secondary">
+        Quay lại
+    </a>
 
 </form>
 

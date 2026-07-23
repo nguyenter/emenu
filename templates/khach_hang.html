@@ -7,47 +7,13 @@
 <form method="GET"
       class="row mb-3">
 
-    <div class="col-md-4">
+    <div class="col-md-6">
 
         <input type="text"
                name="keyword"
                class="form-control"
-               placeholder="Tên, mã hoặc số điện thoại"
+               placeholder="Tìm theo tên, mã hoặc số điện thoại"
                value="{{ request.args.get('keyword', '') }}">
-
-    </div>
-
-    <div class="col-md-3">
-
-        <select name="gioi_tinh"
-                class="form-control">
-
-            <option value="">
-                Tất cả giới tính
-            </option>
-
-            <option value="NAM"
-                {% if request.args.get('gioi_tinh') == 'NAM' %}
-                    selected
-                {% endif %}>
-                Nam
-            </option>
-
-            <option value="NU"
-                {% if request.args.get('gioi_tinh') == 'NU' %}
-                    selected
-                {% endif %}>
-                Nữ
-            </option>
-
-            <option value="KHAC"
-                {% if request.args.get('gioi_tinh') == 'KHAC' %}
-                    selected
-                {% endif %}>
-                Khác
-            </option>
-
-        </select>
 
     </div>
 
@@ -61,7 +27,7 @@
 
     </div>
 
-    <div class="col-md-3 text-end">
+    <div class="col-md-4 text-end">
 
         <a href="/khach-hang/them"
            class="btn btn-success">
@@ -80,15 +46,11 @@
 
         <tr>
 
-            <th>Mã KH</th>
+            <th>Mã khách hàng</th>
 
             <th>Tên khách hàng</th>
 
             <th>Điện thoại</th>
-
-            <th>Giới tính</th>
-
-            <th>Ngày sinh</th>
 
             <th>Thao tác</th>
 
@@ -122,18 +84,6 @@
 
             <td>
 
-                {{ kh.gioi_tinh }}
-
-            </td>
-
-            <td>
-
-                {{ kh.ngay_sinh }}
-
-            </td>
-
-            <td>
-
                 <a href="/khach-hang/sua/{{ kh.id }}"
                    class="btn btn-warning btn-sm">
 
@@ -143,7 +93,7 @@
 
                 <a href="/khach-hang/xoa/{{ kh.id }}"
                    class="btn btn-danger btn-sm"
-                   onclick="return confirm('Xóa khách hàng này?')">
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này? Hành động không thể hoàn tác.');">
 
                     Xóa
 

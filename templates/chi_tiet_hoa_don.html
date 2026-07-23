@@ -2,7 +2,20 @@
 
 {% block content %}
 
-<h2>Hóa đơn {{ hoa_don.ma_hoa_don }}</h2>
+{% set active_tab = active_tab|default('mon-an') %}
+
+<h2>
+    Hóa đơn {{ hoa_don.ma_hoa_don }}
+    {% if hoa_don.ban %}
+        —
+        Bàn {{ hoa_don.ban.ten_ban }}
+        {% if hoa_don.ban_gop %}
+            <small class="text-muted">
+                (đã gộp: {{ hoa_don.ban_gop }})
+            </small>
+        {% endif %}
+    {% endif %}
+</h2>
 
 <br>
 
@@ -51,7 +64,7 @@
 
                     <li class="nav-item">
 
-                        <button class="nav-link active"
+                        <button class="nav-link {% if active_tab == 'mon-an' %}active{% endif %}"
                                 data-bs-toggle="tab"
                                 data-bs-target="#mon-an">
 
@@ -63,7 +76,7 @@
 
                     <li class="nav-item">
 
-                        <button class="nav-link"
+                        <button class="nav-link {% if active_tab == 'do-uong' %}active{% endif %}"
                                 data-bs-toggle="tab"
                                 data-bs-target="#do-uong">
 
@@ -75,7 +88,7 @@
 
                     <li class="nav-item">
 
-                        <button class="nav-link"
+                        <button class="nav-link {% if active_tab == 'combo' %}active{% endif %}"
                                 data-bs-toggle="tab"
                                 data-bs-target="#combo">
 
@@ -91,7 +104,7 @@
                 <div class="tab-content">
 
                     <!-- Món ăn -->
-                    <div class="tab-pane fade show active"
+                    <div class="tab-pane fade {% if active_tab == 'mon-an' %}show active{% endif %}"
                          id="mon-an">
 
                         <div class="row">
@@ -116,7 +129,7 @@
 
                                         <br><br>
 
-                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
+                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=mon-an"
                                            class="btn btn-primary">
 
                                             Chọn
@@ -136,7 +149,7 @@
                     </div>
 
                     <!-- Đồ uống -->
-                    <div class="tab-pane fade"
+                    <div class="tab-pane fade {% if active_tab == 'do-uong' %}show active{% endif %}"
                          id="do-uong">
 
                         <div class="row">
@@ -161,7 +174,7 @@
 
                                         <br><br>
 
-                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
+                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=do-uong"
                                            class="btn btn-primary">
 
                                             Chọn
@@ -181,7 +194,7 @@
                     </div>
 
                     <!-- Combo -->
-                    <div class="tab-pane fade"
+                    <div class="tab-pane fade {% if active_tab == 'combo' %}show active{% endif %}"
                          id="combo">
 
                         <div class="row">
@@ -206,7 +219,7 @@
 
                                         <br><br>
 
-                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}"
+                                        <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab=combo"
                                            class="btn btn-primary">
 
                                             Chọn
@@ -284,21 +297,21 @@
 
                         <td>
 
-                            <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ ct.hang_hoa.id }}"
+                            <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ ct.hang_hoa.id }}?tab={{ active_tab }}"
                                class="btn btn-success btn-sm">
 
                                 +
 
                             </a>
 
-                            <a href="/cashier/giam-mon/{{ ct.id }}"
+                            <a href="/cashier/giam-mon/{{ ct.id }}?tab={{ active_tab }}"
                                class="btn btn-warning btn-sm">
 
                                 -
 
                             </a>
 
-                            <a href="/cashier/xoa-mon/{{ ct.id }}"
+                            <a href="/cashier/xoa-mon/{{ ct.id }}?tab={{ active_tab }}"
                                class="btn btn-danger btn-sm">
 
                                 X
@@ -325,19 +338,101 @@
 
                 <br>
 
-                <a href="/cashier/thanh-toan/{{ hoa_don.id }}"
-                   class="btn btn-success">
+                <button type="button"
+                        class="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalThanhToan">
 
                     Thanh toán
 
-                </a>
+                </button>
 
-                <a href="/cashier"
+                <a href="/cashier/quay-lai/{{ hoa_don.id }}"
                    class="btn btn-secondary">
 
                     Quay lại
 
                 </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal chọn phương thức thanh toán -->
+<div class="modal fade"
+     id="modalThanhToan"
+     tabindex="-1"
+     aria-labelledby="modalThanhToanLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title"
+                    id="modalThanhToanLabel">
+
+                    Chọn phương thức thanh toán
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Đóng">
+                </button>
+
+            </div>
+
+            <div class="modal-body text-center">
+
+                <p class="mb-4">
+
+                    Tổng tiền:
+
+                    <strong>
+
+                        {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
+
+                    </strong>
+
+                </p>
+
+                <div class="d-grid gap-3">
+
+                    <a href="/cashier/thanh-toan/{{ hoa_don.id }}"
+                       class="btn btn-success btn-lg">
+
+                        Tiền mặt
+
+                    </a>
+
+                    <a href="/cashier/thanh-toan-chuyen-khoan/{{ hoa_don.id }}"
+                       class="btn btn-primary btn-lg">
+
+                        Chuyển khoản
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Hủy
+
+                </button>
 
             </div>
 

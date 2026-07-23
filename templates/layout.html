@@ -37,11 +37,17 @@
 
             <h3 class="mt-3">eMenu</h3>
 
+            {% if session.get('vai_tro') == 'ADMIN' %}
+                <small class="text-warning">ADMIN</small>
+            {% elif session.get('vai_tro') == 'QUAN_LY' %}
+                <small class="text-info">Quản lý</small>
+            {% endif %}
+
             <hr>
 
             <ul class="nav flex-column">
 
-                {% if session.get('vai_tro') == 'QUAN_LY' %}
+                {% if session.get('vai_tro') in ['ADMIN', 'QUAN_LY'] %}
 
                 <li class="nav-item">
                     <a class="nav-link text-white"
@@ -84,6 +90,26 @@
                         Quản lý khách hàng
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white"
+                       href="/bao-cao">
+                        Báo cáo
+                    </a>
+                </li>
+
+                {% if session.get('vai_tro') == 'QUAN_LY' %}
+                <li class="nav-item mt-3">
+                    <a class="nav-link text-warning"
+                       href="/cashier">
+                        Bán hàng (Thu ngân)
+                    </a>
+                </li>
+                {% endif %}
+
+                {% endif %}
+
+                {% if session.get('vai_tro') == 'ADMIN' %}
 
                 <li class="nav-item">
                     <a class="nav-link text-white"

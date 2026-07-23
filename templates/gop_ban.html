@@ -1,0 +1,143 @@
+{% extends "layout_cashier.html" %}
+
+{% block title %}
+Gộp bàn
+{% endblock %}
+
+{% block content %}
+
+<h2>Gộp bàn</h2>
+
+<p class="text-muted">
+    Chọn từ 2 bàn đang phục vụ trở lên. Tất cả món sẽ gộp vào
+    <strong>bàn chính</strong>; các bàn còn lại trở về trống.
+</p>
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if not ds_ban_phuc_vu or ds_ban_phuc_vu|length < 2 %}
+
+<div class="alert alert-warning">
+    Cần ít nhất 2 bàn đang phục vụ để gộp.
+</div>
+
+<a href="/cashier" class="btn btn-secondary">
+    Quay lại
+</a>
+
+{% else %}
+
+<form method="POST" id="formGopBan">
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Chọn</th>
+                <th>Bàn chính</th>
+                <th>Tên bàn</th>
+                <th>Số món</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for item in ds_ban_phuc_vu %}
+
+            <tr>
+
+                <td>
+
+                    <input type="checkbox"
+                           name="ban_ids"
+                           value="{{ item.ban.id }}"
+                           class="form-check-input chk-ban"
+                           onchange="capNhatBanChinh()">
+
+                </td>
+
+                <td>
+
+                    <input type="radio"
+                           name="ban_chinh_id"
+                           value="{{ item.ban.id }}"
+                           class="form-check-input radio-ban-chinh"
+                           disabled>
+
+                </td>
+
+                <td>
+                    <strong>{{ item.ban.ten_ban }}</strong>
+                    {% if item.hoa_don.ban_gop %}
+                        <br>
+                        <small class="text-muted">
+                            (đã gộp: {{ item.hoa_don.ban_gop }})
+                        </small>
+                    {% endif %}
+                </td>
+
+                <td>{{ item.so_mon }}</td>
+
+                <td>
+                    {{ "{:,.0f}".format(item.tong_tien) }} đ
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <button type="submit"
+            class="btn btn-warning"
+            onclick="return confirm('Xác nhận gộp các bàn đã chọn?');">
+        Xác nhận gộp bàn
+    </button>
+
+    <a href="/cashier" class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>
+
+<script>
+function capNhatBanChinh() {
+    const checks = document.querySelectorAll('.chk-ban');
+    const radios = document.querySelectorAll('.radio-ban-chinh');
+
+    radios.forEach(function (r) {
+        r.disabled = true;
+    });
+
+    let firstChecked = null;
+    checks.forEach(function (c) {
+        const radio = document.querySelector(
+            '.radio-ban-chinh[value="' + c.value + '"]'
+        );
+        if (c.checked) {
+            radio.disabled = false;
+            if (!firstChecked) firstChecked = radio;
+        } else {
+            radio.checked = false;
+        }
+    });
+
+    const anyCheckedRadio = document.querySelector(
+        '.radio-ban-chinh:checked'
+    );
+    if (!anyCheckedRadio && firstChecked) {
+        firstChecked.checked = true;
+    }
+}
+</script>
+
+{% endif %}
+
+{% endblock %}

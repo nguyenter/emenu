@@ -1,0 +1,77 @@
+{% extends "layout_cashier.html" %}
+
+{% block title %}
+    Thanh toán thành công
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm text-center">
+
+            <div class="card-body p-4">
+
+                <h3 class="text-success mb-3">
+                    Thanh toán thành công
+                </h3>
+
+                <p class="mb-2">
+
+                    Mã hóa đơn:
+
+                    <strong>
+                        {{ hoa_don.ma_hoa_don }}
+                    </strong>
+
+                </p>
+
+                <p class="mb-4">
+
+                    Tổng tiền:
+
+                    <strong class="text-danger">
+                        {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
+                    </strong>
+
+                </p>
+
+                <p class="text-muted mb-4">
+                    Hóa đơn PDF đang được tải xuống...
+                </p>
+
+                <div class="d-grid gap-2">
+
+                    <a href="/cashier/hoa-don/{{ hoa_don.id }}/pdf"
+                       class="btn btn-primary btn-lg"
+                       id="btn-tai-pdf">
+
+                        Tải lại hóa đơn PDF
+
+                    </a>
+
+                    <a href="/cashier"
+                       class="btn btn-success btn-lg">
+
+                        Quay lại thu ngân
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<iframe src="/cashier/hoa-don/{{ hoa_don.id }}/pdf"
+        style="display:none;"
+        title="Tải hóa đơn PDF">
+</iframe>
+
+{% endblock %}

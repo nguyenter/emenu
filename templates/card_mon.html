@@ -1,0 +1,30 @@
+<div class="col-md-4 mb-3">
+
+    <div class="card">
+
+        <div class="card-body text-center">
+
+            <strong>
+
+                {{ mon.ten_hang }}
+
+            </strong>
+
+            <br>
+
+            {{ "{:,.0f}".format(mon.gia_ban) }} đ
+
+            <br><br>
+
+            <a href="/cashier/them-mon/{{ hoa_don.id }}/{{ mon.id }}?tab={{ tab|default('mon-an') }}"
+               class="btn btn-primary">
+
+                Chọn
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

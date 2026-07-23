@@ -1,0 +1,155 @@
+{% extends "layout_cashier.html" %}
+
+{% block title %}
+Tách bàn
+{% endblock %}
+
+{% block content %}
+
+<h2>Tách bàn</h2>
+
+<p class="text-muted">
+    Chọn bàn nguồn đang phục vụ, bàn đích đang trống, rồi chọn món/số lượng cần tách sang bàn mới.
+</p>
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if not ds_ban_nguon %}
+
+<div class="alert alert-warning">
+    Không có bàn nào đang phục vụ có món để tách.
+</div>
+
+<a href="/cashier" class="btn btn-secondary">
+    Quay lại
+</a>
+
+{% else %}
+
+<form method="GET" class="mb-4">
+
+    <div class="row align-items-end">
+
+        <div class="col-md-4">
+
+            <label class="form-label">Bàn nguồn (đang phục vụ)</label>
+
+            <select name="ban_nguon_id"
+                    class="form-select"
+                    onchange="this.form.submit()"
+                    required>
+
+                <option value="">-- Chọn bàn --</option>
+
+                {% for item in ds_ban_nguon %}
+
+                <option value="{{ item.ban.id }}"
+                    {% if ban_nguon_id == item.ban.id %}selected{% endif %}>
+                    {{ item.ban.ten_ban }}
+                    — {{ "{:,.0f}".format(item.hoa_don.tong_tien or 0) }} đ
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+    </div>
+
+</form>
+
+{% if ban_nguon_info %}
+
+<form method="POST">
+
+    <input type="hidden" name="buoc" value="tach">
+    <input type="hidden" name="ban_nguon_id" value="{{ ban_nguon_info.ban.id }}">
+
+    <div class="mb-3 col-md-4">
+
+        <label class="form-label">Bàn đích (đang trống)</label>
+
+        <select name="ban_dich_id"
+                class="form-select"
+                required>
+
+            <option value="">-- Chọn bàn trống --</option>
+
+            {% for ban in ds_ban_trong %}
+
+            <option value="{{ ban.id }}">
+                {{ ban.ten_ban }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+    </div>
+
+    <h5 class="mt-4">Chọn món tách sang bàn mới</h5>
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Món</th>
+                <th>Đơn giá</th>
+                <th>SL hiện có</th>
+                <th>SL tách</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for ct in ban_nguon_info.ds_chi_tiet %}
+
+            <tr>
+
+                <td>{{ ct.hang_hoa.ten_hang }}</td>
+
+                <td>{{ "{:,.0f}".format(ct.don_gia) }} đ</td>
+
+                <td>{{ ct.so_luong }}</td>
+
+                <td style="max-width: 120px;">
+
+                    <input type="number"
+                           name="sl_{{ ct.id }}"
+                           class="form-control"
+                           min="0"
+                           max="{{ ct.so_luong }}"
+                           value="0">
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <button type="submit"
+            class="btn btn-info"
+            onclick="return confirm('Xác nhận tách món sang bàn mới?');">
+        Xác nhận tách bàn
+    </button>
+
+    <a href="/cashier" class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>
+
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "layout_cashier.html" %}
+
+{% block title %}
+    Thanh toán chuyển khoản
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-primary text-white">
+
+                <h4 class="mb-0">
+
+                    Thanh toán chuyển khoản
+
+                </h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row mb-4">
+
+                    <div class="col-md-6">
+
+                        <p class="mb-1 text-muted">
+                            Mã hóa đơn
+                        </p>
+
+                        <h5>
+                            {{ hoa_don.ma_hoa_don }}
+                        </h5>
+
+                        {% if hoa_don.ban %}
+
+                            <p class="mb-0">
+
+                                Bàn:
+
+                                <strong>
+                                    {{ hoa_don.ban.ten_ban }}
+                                </strong>
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="col-md-6 text-md-end">
+
+                        <p class="mb-1 text-muted">
+                            Số tiền cần thanh toán
+                        </p>
+
+                        <h3 class="text-danger mb-0">
+
+                            {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h5 class="mb-3">
+                    Chi tiết món
+                </h5>
+
+                <table class="table table-bordered">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Món</th>
+
+                            <th class="text-center">SL</th>
+
+                            <th class="text-end">Thành tiền</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for ct in ds_chi_tiet %}
+
+                        <tr>
+
+                            <td>
+                                {{ ct.hang_hoa.ten_hang }}
+                            </td>
+
+                            <td class="text-center">
+                                {{ ct.so_luong }}
+                            </td>
+
+                            <td class="text-end">
+                                {{ "{:,.0f}".format(ct.thanh_tien) }} đ
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="3"
+                                class="text-center text-muted">
+
+                                Chưa có món nào
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <hr>
+
+                <!-- Khu vực tích hợp PayOS -->
+                <div class="border rounded p-4 mb-4 bg-light"
+                     id="payos-payment-area">
+
+                    <h5 class="mb-3">
+                        Thanh toán qua PayOS
+                    </h5>
+
+                    <p class="text-muted mb-3">
+
+                        Khu vực này dành để gắn mã QR / link thanh toán PayOS.
+                        Hiện tại chưa kết nối API — có thể bổ sung sau.
+
+                    </p>
+
+                    <div class="alert alert-info mb-0">
+
+                        <strong>Gợi ý tích hợp:</strong>
+
+                        tạo payment link PayOS với số tiền
+
+                        <strong>
+                            {{ "{:,.0f}".format(hoa_don.tong_tien) }} đ
+                        </strong>
+
+                        cho hóa đơn
+
+                        <code>{{ hoa_don.ma_hoa_don }}</code>,
+
+                        rồi hiển thị QR tại đây và lắng nghe webhook khi khách thanh toán thành công.
+
+                    </div>
+
+                    <!--
+                        TODO PayOS:
+                        - Gọi API tạo payment link
+                        - Hiển thị QR code / checkout URL
+                        - Webhook cập nhật hóa đơn khi PAID
+                    -->
+
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <form method="POST"
+                          action="/cashier/xac-nhan-chuyen-khoan/{{ hoa_don.id }}"
+                          class="d-inline">
+
+                        <button type="submit"
+                                class="btn btn-primary btn-lg"
+                                onclick="return confirm('Xác nhận đã nhận chuyển khoản thành công?');">
+
+                            Xác nhận đã chuyển khoản
+
+                        </button>
+
+                    </form>
+
+                    <a href="/cashier/hoa-don/{{ hoa_don.id }}"
+                       class="btn btn-secondary btn-lg">
+
+                        Quay lại hóa đơn
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
