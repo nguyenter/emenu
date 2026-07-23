@@ -7,6 +7,12 @@
           content="width=device-width, initial-scale=1">
     <title>{% block title %}eMenu{% endblock %}</title>
 
+    <link rel="icon"
+          type="image/png"
+          href="{{ url_for('static', filename='images/emenu.png') }}">
+    <link rel="apple-touch-icon"
+          href="{{ url_for('static', filename='images/emenu.png') }}">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
@@ -73,6 +79,29 @@
             min-height: 34px;
         }
 
+        .brand-logo {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .brand-logo-sidebar {
+            max-height: 56px;
+            width: auto;
+            margin: 0.25rem 0 0.5rem;
+        }
+
+        .brand-logo-nav {
+            max-height: 36px;
+            width: auto;
+        }
+
+        .brand-logo-offcanvas {
+            max-height: 40px;
+            width: auto;
+        }
+
         @media (max-width: 991.98px) {
             .sidebar-desktop {
                 display: none !important;
@@ -111,7 +140,11 @@
                 aria-controls="menuMobile">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <span class="navbar-brand mb-0 h1">eMenu</span>
+        <span class="navbar-brand mb-0 py-1">
+            <img src="{{ url_for('static', filename='images/emenu.png') }}"
+                 alt="eMenu"
+                 class="brand-logo brand-logo-nav">
+        </span>
         <span class="text-white-50 small">
             {% if session.get('vai_tro') == 'ADMIN' %}ADMIN
             {% elif session.get('vai_tro') == 'QUAN_LY' %}Quản lý
@@ -123,8 +156,12 @@
 <div class="offcanvas offcanvas-start text-bg-dark"
      tabindex="-1"
      id="menuMobile">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title">eMenu</h5>
+    <div class="offcanvas-header align-items-center">
+        <h5 class="offcanvas-title mb-0">
+            <img src="{{ url_for('static', filename='images/emenu.png') }}"
+                 alt="eMenu"
+                 class="brand-logo brand-logo-offcanvas">
+        </h5>
         <button type="button"
                 class="btn-close btn-close-white"
                 data-bs-dismiss="offcanvas"
@@ -138,7 +175,11 @@
 </div>
 
 <aside class="bg-dark text-white sidebar-desktop d-none d-lg-block p-3">
-    <h3 class="mt-2">eMenu</h3>
+    <div class="text-center text-lg-start">
+        <img src="{{ url_for('static', filename='images/emenu.png') }}"
+             alt="eMenu"
+             class="brand-logo brand-logo-sidebar">
+    </div>
     {% if session.get('vai_tro') == 'ADMIN' %}
         <small class="text-warning">ADMIN</small>
     {% elif session.get('vai_tro') == 'QUAN_LY' %}

@@ -6,12 +6,28 @@
           content="width=device-width, initial-scale=1">
     <title>Đăng nhập eMenu</title>
 
+    <link rel="icon"
+          type="image/png"
+          href="{{ url_for('static', filename='images/emenu.png') }}">
+    <link rel="apple-touch-icon"
+          href="{{ url_for('static', filename='images/emenu.png') }}">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
     <style>
         .btn, .form-control {
             min-height: 44px;
+        }
+
+        .brand-logo-login {
+            display: block;
+            max-width: 180px;
+            max-height: 72px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            margin: 0 auto 0.5rem;
         }
     </style>
 </head>
@@ -26,8 +42,10 @@
 
             <div class="card shadow">
 
-                <div class="card-header text-center">
-                    <h3>eMenu</h3>
+                <div class="card-header text-center py-3">
+                    <img src="{{ url_for('static', filename='images/emenu.png') }}"
+                         alt="eMenu"
+                         class="brand-logo-login">
                     <p class="mb-0">Đăng nhập hệ thống</p>
                 </div>
 
