@@ -1,8 +1,32 @@
-# eMenu
+<p align="center">
+  <img src="static/images/emenu.png" alt="Logo eMenu" width="320">
+</p>
 
-Hệ thống quản lý nhà hàng / thu ngân (POS) viết bằng **Flask + MySQL + Bootstrap**.
+<h1 align="center">eMenu</h1>
 
-Repository: https://github.com/nguyenter/emenu
+<p align="center">
+  Hệ thống quản lý nhà hàng / thu ngân (POS)<br>
+  viết bằng <strong>Flask + MySQL + Bootstrap</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/nguyenter/emenu">github.com/nguyenter/emenu</a>
+</p>
+
+## Logo
+
+Logo **eMenu** đặt nền đen, chữ hiện đại sans-serif:
+
+- Chữ **e** màu xanh cyan — gợi ý phần mềm / điện tử (*electronic*)
+- Chữ **Menu** màu trắng — nhấn mạnh thực đơn và nghiệp vụ nhà hàng
+
+File logo: [`static/images/emenu.png`](static/images/emenu.png)
+
+Logo được dùng làm:
+
+- Thương hiệu trên sidebar / navbar (trang quản lý & thu ngân)
+- Trang đăng nhập
+- **Favicon** trên tab trình duyệt
 
 ## Tính năng chính
 
