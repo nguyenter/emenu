@@ -55,7 +55,7 @@ class HoaDon(db.Model):
         nullable=False
     )
 
-    # Tên các bàn đã gộp vào (vd: "Bàn 2, Bàn 3")
+
     ban_gop = db.Column(
         db.String(255),
         nullable=True

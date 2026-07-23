@@ -137,7 +137,7 @@ def tao_hoa_don_pdf(hoa_don, ds_chi_tiet, chi_nhanh=None):
         if chi_nhanh and chi_nhanh.ten_chi_nhanh
         else 'eMenu'
     )
-    # Địa chỉ để trống thêm sau; nếu chi nhánh đã có thì dùng tạm
+
     dia_chi = (
         chi_nhanh.dia_chi
         if chi_nhanh and chi_nhanh.dia_chi

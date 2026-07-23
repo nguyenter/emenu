@@ -85,7 +85,7 @@ def _map_loai_thuc_don(value):
         'COMBO': 'COMBO',
     }
 
-    # So khớp không dấu / có dấu đơn giản
+
     raw = str(value).strip().lower()
     if raw in ('món ăn', 'mon an', 'mónăn'):
         return 'MON_AN'
@@ -112,7 +112,7 @@ def _parse_gia(value):
         .replace('vnd', '')
     )
 
-    # 45.000 hoặc 45,000 → nghìn VNĐ
+
     if re.match(r'^\d{1,3}([.]\d{3})+$', text):
         text = text.replace('.', '')
     elif re.match(r'^\d{1,3}([,]\d{3})+$', text):
@@ -139,7 +139,7 @@ def _tim_nhom_hang(ten_hoac_ma, chi_nhanh_id=None):
     if nhom:
         return nhom
 
-    # Không phân biệt hoa thường
+
     for item in query.all():
         if (
             (item.ten_nhom and item.ten_nhom.strip().lower() == key.lower())

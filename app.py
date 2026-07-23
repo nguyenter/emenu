@@ -56,7 +56,7 @@ def _lay_user_dang_nhap():
         session.clear()
         return None
 
-    # Đồng bộ lại vai trò phòng khi bị đổi trên DB
+
     session['ho_ten'] = user.ho_ten
     session['vai_tro'] = user.vai_tro
     return user
@@ -199,7 +199,7 @@ def cashier_gop_ban():
     if not user:
         return redirect(url_for('login'))
 
-    # Các bàn đang phục vụ (có hóa đơn mở)
+
     ds_hoa_don = HoaDon.query.filter_by(
         trang_thai='DANG_PHUC_VU'
     ).all()
@@ -636,7 +636,7 @@ def chon_ban(ban_id):
         )
 
         db.session.add(hoa_don)
-        # Chỉ đánh dấu đang phục vụ khi đã có món
+
         db.session.commit()
 
     return redirect(
@@ -678,7 +678,7 @@ def quay_lai_hoa_don(hoa_don_id):
         ).count()
 
         if so_mon == 0:
-            # Chưa chọn món → hủy hóa đơn trống, trả bàn về trống
+
             ban = db.session.get(Ban, hoa_don.ban_id)
             if ban:
                 ban.trang_thai = 'TRONG'
@@ -686,7 +686,7 @@ def quay_lai_hoa_don(hoa_don_id):
             db.session.delete(hoa_don)
             db.session.commit()
         else:
-            # Còn món chưa thanh toán → giữ đang phục vụ
+
             _cap_nhat_trang_thai_ban_theo_hoa_don(hoa_don)
             db.session.commit()
 
@@ -978,7 +978,7 @@ def xac_nhan_chuyen_khoan(hoa_don_id):
     if hoa_don.trang_thai != 'DANG_PHUC_VU':
         return redirect(url_for('cashier'))
 
-    # TODO: thay bằng xác nhận webhook / status từ PayOS
+
     hoa_don.trang_thai = 'DA_THANH_TOAN'
     hoa_don.phuong_thuc_thanh_toan = 'CHUYEN_KHOAN'
 
@@ -1085,13 +1085,13 @@ def them_khach_hang_nhanh(hoa_don_id):
             error='Vui lòng nhập số điện thoại'
         )
 
-    # Chuẩn hóa tìm kiếm SĐT
+
     khach_hang = KhachHang.query.filter(
         db.func.replace(KhachHang.dien_thoai, ' ', '') == dien_thoai
     ).first()
 
     if not khach_hang:
-        # Fallback like nếu DB không có khoảng trắng
+
         khach_hang = KhachHang.query.filter_by(
             dien_thoai=dien_thoai
         ).first()
@@ -1112,9 +1112,9 @@ def them_khach_hang_nhanh(hoa_don_id):
             dien_thoai=dien_thoai
         )
 
-    # buoc == luu
+
     if khach_hang:
-        # Khách cũ: dùng lại mã & thông tin đã lưu
+
         hoa_don.khach_hang_id = khach_hang.id
         db.session.commit()
 
@@ -1150,7 +1150,7 @@ def them_khach_hang_nhanh(hoa_don_id):
     db.session.add(khach_hang)
     db.session.flush()
 
-    # Mã KH dùng chung với quản lý: KH001, KH002...
+
     khach_hang.ma_khach_hang = f"KH{khach_hang.id:03d}"
 
     hoa_don.khach_hang_id = khach_hang.id
@@ -1397,7 +1397,7 @@ def bao_cao():
             nhan_ky = f'Ngày {d.strftime("%d/%m/%Y")}'
 
         elif loai == 'tuan':
-            # Định dạng HTML week: 2026-W30
+
             year_str, week_str = tuan.split('-W')
             year_i, week_i = int(year_str), int(week_str)
             tu_ngay = date.fromisocalendar(year_i, week_i, 1)
@@ -1418,7 +1418,7 @@ def bao_cao():
             )
             nhan_ky = f'Tháng {month_i:02d}/{year_i}'
 
-        else:  # nam
+        else:
             year_i = int(nam)
             tu_ngay = date(year_i, 1, 1)
             den_ngay = date(year_i, 12, 31)
@@ -1694,7 +1694,7 @@ def sua_nguoi_dung(id):
             request.form['trang_thai'] == '1'
         )
 
-        # Chỉ đổi mật khẩu nếu có nhập
+
         if request.form['mat_khau']:
 
             nguoi_dung.mat_khau = request.form[

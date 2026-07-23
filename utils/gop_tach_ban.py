@@ -68,7 +68,7 @@ def gop_ban(ban_chinh_id, ds_ban_gop_id, nguoi_dung_id):
 
     hoa_don_chinh = _lay_hoa_don_dang_phuc_vu(ban_chinh_id)
     if not hoa_don_chinh:
-        # Tạo hóa đơn trống nếu bàn chính chưa có
+
         hoa_don_chinh = HoaDon(
             ma_hoa_don='HD' + datetime.now().strftime('%Y%m%d%H%M%S'),
             ban_id=ban_chinh_id,
@@ -92,19 +92,19 @@ def gop_ban(ban_chinh_id, ds_ban_gop_id, nguoi_dung_id):
 
         _gop_chi_tiet_vao_hoa_don(hoa_don_chinh, hoa_don_phu)
 
-        # Giữ khách hàng nếu bàn chính chưa có
+
         if not hoa_don_chinh.khach_hang_id and hoa_don_phu.khach_hang_id:
             hoa_don_chinh.khach_hang_id = hoa_don_phu.khach_hang_id
 
         ten_ban_gop.append(ban.ten_ban)
 
-        # Xóa hóa đơn phụ
+
         db.session.delete(hoa_don_phu)
         ban.trang_thai = 'TRONG'
 
     _tinh_lai_tong_tien(hoa_don_chinh.id)
 
-    # Cập nhật ghi chú bàn gộp để hiển thị
+
     cu = (hoa_don_chinh.ban_gop or '').strip()
     moi = ', '.join(ten_ban_gop)
     if cu:
@@ -142,7 +142,7 @@ def tach_ban(ban_nguon_id, ban_dich_id, ds_tach, nguoi_dung_id):
     if not hoa_don_nguon:
         return False, f'Bàn {ban_nguon.ten_ban} không có hóa đơn đang phục vụ'
 
-    # Lọc các dòng tách hợp lệ
+
     mon_tach = []
     for item in ds_tach:
         ct_id = int(item.get('chi_tiet_id', 0))
@@ -199,7 +199,7 @@ def tach_ban(ban_nguon_id, ban_dich_id, ds_tach, nguoi_dung_id):
 
     ban_dich.trang_thai = 'DANG_PHUC_VU'
 
-    # Nếu bàn nguồn hết món → về trống và hủy hóa đơn trống
+
     so_mon_con = ChiTietHoaDon.query.filter_by(
         hoa_don_id=hoa_don_nguon.id
     ).count()
@@ -209,7 +209,7 @@ def tach_ban(ban_nguon_id, ban_dich_id, ds_tach, nguoi_dung_id):
         db.session.delete(hoa_don_nguon)
     else:
         ban_nguon.trang_thai = 'DANG_PHUC_VU'
-        # Xóa tên bàn đích khỏi ban_gop nếu có
+
         if hoa_don_nguon.ban_gop:
             parts = [
                 p.strip()

@@ -116,7 +116,7 @@ def xoa_chi_nhanh_an_toan(chi_nhanh):
         ).all()
     ]
 
-    # Lấy mọi bàn thuộc chi nhánh HOẶC thuộc khu vực của chi nhánh
+
     ban_query = Ban.query.filter(Ban.chi_nhanh_id == chi_nhanh.id)
     if khu_vuc_ids:
         ban_query = Ban.query.filter(
@@ -128,20 +128,20 @@ def xoa_chi_nhanh_an_toan(chi_nhanh):
 
     ban_ids = [b.id for b in ban_query.all()]
 
-    # Xóa hóa đơn gắn bàn
+
     if ban_ids:
         for hd in HoaDon.query.filter(
             HoaDon.ban_id.in_(ban_ids)
         ).all():
             xoa_hoa_don_an_toan(hd)
 
-    # Hóa đơn theo chi_nhanh_id
+
     for hd in HoaDon.query.filter_by(
         chi_nhanh_id=chi_nhanh.id
     ).all():
         xoa_hoa_don_an_toan(hd)
 
-    # Người dùng thuộc chi nhánh (trừ admin đã chuyển)
+
     ds_user = NguoiDung.query.filter_by(
         chi_nhanh_id=chi_nhanh.id
     ).all()
@@ -178,8 +178,7 @@ def xoa_chi_nhanh_an_toan(chi_nhanh):
         chi_nhanh_id=chi_nhanh.id
     ).delete(synchronize_session=False)
 
-    # Phải xóa bàn trước khu vực (FK ban.khu_vuc_id)
-    # Dùng session.delete để tránh bulk-delete lệch với object trong session
+
     ds_ban = []
     if ban_ids:
         ds_ban = Ban.query.filter(Ban.id.in_(ban_ids)).all()
